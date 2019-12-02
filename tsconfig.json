@@ -14,7 +14,7 @@
     "outDir": "./dist",
     "baseUrl": "./src",
     "paths": {
-      "@kl/*": ["./*"]
+      "*": ["./*"]
     }
   },
   "include": ["src/**/*"],
