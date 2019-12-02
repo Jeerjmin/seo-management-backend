@@ -1,5 +1,5 @@
-import crypto from 'crypto'
-import queryString from 'query-string'
+const crypto = require('crypto')
+const queryString = require('query-string')
 
 export class HmacValidatorHelper {
   static checkHmacValidity(apiSecret: string, query: ShopifyCallbackQuery) {

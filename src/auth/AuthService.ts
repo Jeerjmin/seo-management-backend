@@ -47,7 +47,7 @@ export class AuthService {
     return response.status(204).send()
   }
 
-  private createShopifyAuthUrl(response, shop: string) {
+  private createShopifyAuthUrl(response, shop: string): string {
     const redirectUri = `${this.configService.get('FORWARDING_ADDRESS')}/${ApiLayers.SESSIONS}install/callback`
     const nonce = NonceHelper.generateNonce()
 
@@ -79,7 +79,7 @@ export class AuthService {
       .catch(({ message }) => response.status(401).send(new ErrorDto(401, 'Unauthorized', message)))
   }
 
-  private createAuthCookies(response, shopName: string, accessToken: string) {
+  private createAuthCookies(response, shopName: string, accessToken: string): void {
     CookieHelper.createCookie(response, 'ss', ObfuscationHelper.encrypt(accessToken))
     CookieHelper.createCookie(response, 'pfx', ObfuscationHelper.encrypt(shopName))
   }

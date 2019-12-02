@@ -1,4 +1,3 @@
-// tslint:disable-next-line: no-var-requires
 const CryptoJS = require('crypto-js')
 
 export class ObfuscationHelper {
