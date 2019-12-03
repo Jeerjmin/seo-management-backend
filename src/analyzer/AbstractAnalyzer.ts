@@ -1,3 +1,4 @@
+import { pick } from 'lodash'
 import { Analyzer } from './Analyzer'
 
 export abstract class AbstractAnalyzer implements Analyzer {
@@ -13,7 +14,12 @@ export abstract class AbstractAnalyzer implements Analyzer {
     return this.computed && !force ? this.results : this.compute()
   }
 
-  getAttribute(attrKey: string): object | undefined {
-    return this.computed ? this.results[attrKey] : undefined
+  getAttributes(...attrs: string[]): object | undefined {
+    if (this.computed) {
+      return pick(this.results, attrs)
+    }
+
+    this.compute()
+    return this.getAttributes(...attrs)
   }
 }
