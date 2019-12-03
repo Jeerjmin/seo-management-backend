@@ -10,20 +10,10 @@ export abstract class AbstractAnalyzer implements Analyzer {
   }
 
   getResults(force: boolean = false): object {
-    if (this.computed && !force) {
-      console.log('I was already computed')
-      return this.results
-    }
-
-    console.log('Computed first time')
-    return this.compute()
+    return this.computed && !force ? this.results : this.compute()
   }
 
   getAttribute(attrKey: string): object | undefined {
-    if (this.computed) {
-      return this.results[attrKey]
-    }
-
-    return undefined
+    return this.computed ? this.results[attrKey] : undefined
   }
 }
