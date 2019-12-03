@@ -5,6 +5,7 @@ import * as ormconfig from './ormconfig'
 import { ConfigModule } from 'config/ConfigModule'
 import { AuthModule } from 'auth/AuthModule'
 import { UserModule } from 'user/UserModule'
+import { AnalyzerModule } from 'analyzer/AnalyzerModule'
 
 @Module({
   providers: [
@@ -13,6 +14,6 @@ import { UserModule } from 'user/UserModule'
       useClass: ClassSerializerInterceptor,
     },
   ],
-  imports: [ConfigModule, AuthModule, UserModule, TypeOrmModule.forRoot(ormconfig)],
+  imports: [ConfigModule, AuthModule, UserModule, AnalyzerModule, TypeOrmModule.forRoot(ormconfig)],
 })
 export class CoreModule {}
