@@ -4,6 +4,7 @@ import { Module, ClassSerializerInterceptor } from '@nestjs/common'
 import * as ormconfig from './ormconfig'
 import { ConfigModule } from 'config/ConfigModule'
 import { AuthModule } from 'auth/AuthModule'
+import { UserModule } from 'user/UserModule'
 
 @Module({
   providers: [
@@ -12,6 +13,6 @@ import { AuthModule } from 'auth/AuthModule'
       useClass: ClassSerializerInterceptor,
     },
   ],
-  imports: [ConfigModule, AuthModule, TypeOrmModule.forRoot(ormconfig)],
+  imports: [ConfigModule, AuthModule, UserModule, TypeOrmModule.forRoot(ormconfig)],
 })
 export class CoreModule {}

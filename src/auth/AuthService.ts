@@ -12,10 +12,17 @@ import { AuthValidatorFactory } from './AuthValidatorFactory'
 import { AuthParamsValidator } from './AuthParamsValidator'
 import { AuthResponseLinkValidator } from './AuthResponseLinkValidator'
 import { ShopifyConstants } from 'infrastructure/constants/ShopifyConstants'
+import { UserFacade } from 'user/UserFacade'
+import { UserDto } from 'user/dto/UserDto'
+import { UserCreateDto } from 'user/dto/UserCreateDto'
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly configService: ConfigService, private readonly validatorFactory: AuthValidatorFactory) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly validatorFactory: AuthValidatorFactory,
+    private readonly userFacade: UserFacade,
+  ) {}
 
   handleOAuth(response, shop: string) {
     const paramsValidator: Validator = this.validatorFactory.getValidator(AuthParamsValidator.name)
@@ -96,9 +103,18 @@ export class AuthService {
       .catch(({ message }) => response.status(401).send(new ErrorDto(401, 'Unauthorized', message)))
   }
 
-  private async fetchCallback(response, shopName: string, data: object) {
-    // create user and cookie
-    // CookieHelper.createCookie(response, 'id', '')
+  private async fetchCallback(response, shopName: string, data) {
+    const payload: UserCreateDto = {
+      ...data,
+      domain: data.domain,
+      shopName: data.name,
+      ownerName: data.shop_owner,
+      originalDomain: data.myshopify_domain,
+    }
+
+    const user: UserDto = await this.userFacade.fetchOrCreate(shopName, payload)
+    CookieHelper.createCookie(response, 'id', user.id.toString())
+
     return response.status(302).redirect('http://localhost:8080')
   }
 }
