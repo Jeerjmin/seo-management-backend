@@ -5,21 +5,21 @@ export abstract class AbstractAnalyzer implements Analyzer {
   protected results: object
   private computed: boolean
 
-  protected compute(): any {
+  protected compute(data: any): any {
     this.computed = true
     return this.results
   }
 
-  getResults(force: boolean = false): object {
-    return this.computed && !force ? this.results : this.compute()
+  getResults(data: any, force: boolean = false): object {
+    return this.computed && !force ? this.results : this.compute(data)
   }
 
-  getAttributes(...attrs: string[]): object | undefined {
+  getAttributes(data: any, ...attrs: string[]): object | undefined {
     if (this.computed) {
       return pick(this.results, attrs)
     }
 
-    this.compute()
-    return this.getAttributes(...attrs)
+    this.compute(data)
+    return this.getAttributes(data, ...attrs)
   }
 }
