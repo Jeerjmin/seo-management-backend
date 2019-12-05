@@ -1,24 +1,13 @@
-import { HttpException, HttpStatus } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { HttpService } from 'http/HttpService'
 import { ErrorDto } from 'error/ErrorDto'
 
+@Injectable()
 export class AnalyzerDataFetcher {
-  private static instance: AnalyzerDataFetcher
-  private dataToParse: object = {}
-  private fetched: boolean = false
+  constructor(private readonly httpService: HttpService) {}
 
-  private constructor(private readonly httpService: HttpService) {}
-
-  static getInstance(httpService): AnalyzerDataFetcher {
-    if (!AnalyzerDataFetcher.instance) {
-      AnalyzerDataFetcher.instance = new AnalyzerDataFetcher(httpService)
-    }
-
-    return AnalyzerDataFetcher.instance
-  }
-
-  async getDataToParse(force: boolean = false) {
-    return this.fetched && !force ? this.dataToParse : this.fetchData()
+  async getDataToParse() {
+    return this.fetchData()
   }
 
   private async fetchData(): Promise<object> {
@@ -29,17 +18,13 @@ export class AnalyzerDataFetcher {
     const smartCollections = await this.httpService.get('/smart_collections.json')
 
     try {
-      const parsedData = {
+      return {
         products: products.data.products,
         pages: pages.data.pages,
         articles: articles.data.articles,
         customCollections: customCollections.data.custom_collections,
         smartCollections: smartCollections.data.smart_collections,
       }
-
-      this.fetched = true
-      this.dataToParse = parsedData
-      return parsedData
     } catch (error) {
       throw new HttpException(
         new ErrorDto(422, 'There is a problem with Shopify API. Try again in a few minutes.', error),

@@ -1,4 +1,4 @@
 export interface Analyzer {
-  getResults(data: any, force?: boolean): object
+  getResults(data: any): object
   getAttributes(data: any, ...attrs: string[]): object
 }

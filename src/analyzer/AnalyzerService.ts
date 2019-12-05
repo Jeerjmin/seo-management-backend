@@ -4,15 +4,10 @@ import { AnalyzerType } from './AnalyzerType'
 import { ErrorDto } from 'error/ErrorDto'
 import { AnalyzerParams } from './params/AnalyzerParams'
 import { AnalyzerDataFetcher } from './AnalyzerDataFetcher'
-import { HttpService } from 'http/HttpService'
 
 @Injectable()
 export class AnalyzerService {
-  private readonly dataFetcher: AnalyzerDataFetcher
-
-  constructor(private readonly registry: AnalyzerRegistry, private readonly httpService: HttpService) {
-    this.dataFetcher = AnalyzerDataFetcher.getInstance(this.httpService)
-  }
+  constructor(private readonly registry: AnalyzerRegistry, private readonly dataFetcher: AnalyzerDataFetcher) {}
 
   async handleFetch(params: AnalyzerParams) {
     const typeParam = params.type
