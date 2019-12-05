@@ -3,16 +3,18 @@ import { AnalyzerRegistry } from './AnalyzerRegistry'
 import { AnalyzerType } from './AnalyzerType'
 import { ErrorDto } from 'error/ErrorDto'
 import { AnalyzerParams } from './params/AnalyzerParams'
-import { AnalyzerParseDataFactory } from './AnalyzerParseDataFactory'
+import { AnalyzerDataFetcher } from './AnalyzerDataFetcher'
+import { HttpService } from 'http/HttpService'
 
 @Injectable()
 export class AnalyzerService {
-  constructor(
-    private readonly registry: AnalyzerRegistry,
-    private readonly parseDataFactory: AnalyzerParseDataFactory,
-  ) {}
+  private readonly dataFetcher: AnalyzerDataFetcher
 
-  handleFetch(params: AnalyzerParams) {
+  constructor(private readonly registry: AnalyzerRegistry, private readonly httpService: HttpService) {
+    this.dataFetcher = AnalyzerDataFetcher.getInstance(this.httpService)
+  }
+
+  async handleFetch(params: AnalyzerParams) {
     const typeParam = params.type
     const fieldsParam = params.fields
 
@@ -21,7 +23,7 @@ export class AnalyzerService {
 
     if (isTypeValid) {
       const analyzer = this.registry.getAnalyzer(type)
-      const dataToParse = this.parseDataFactory.getDataToParse(type)
+      const dataToParse = await this.dataFetcher.getDataToParse()
 
       if (fieldsParam) {
         return analyzer.getAttributes(dataToParse, ...fieldsParam.split(','))

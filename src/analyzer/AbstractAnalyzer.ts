@@ -6,7 +6,9 @@ export abstract class AbstractAnalyzer implements Analyzer {
   private computed: boolean
 
   protected compute(data: any): any {
+    this.results = data
     this.computed = true
+
     return this.results
   }
 
