@@ -1,4 +1,6 @@
 export class NonceHelper {
+  private constructor() {}
+
   static generateNonce(bits = 64) {
     let text = ''
     const possible = 'ABCDEFGHIJKLMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'

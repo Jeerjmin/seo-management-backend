@@ -1,6 +1,8 @@
 export class CookieHelper {
   private static readonly COOKIE_PREFIX: string = '_seoinsights_'
 
+  private constructor() {}
+
   static createCookie(
     response,
     name: string,

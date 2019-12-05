@@ -2,6 +2,8 @@ const crypto = require('crypto')
 const queryString = require('query-string')
 
 export class HmacValidatorHelper {
+  private constructor() {}
+
   static checkHmacValidity(apiSecret: string, query: ShopifyCallbackQuery) {
     if (!apiSecret || !query) {
       return false

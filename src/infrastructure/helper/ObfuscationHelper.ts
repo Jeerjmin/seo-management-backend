@@ -1,6 +1,8 @@
 const CryptoJS = require('crypto-js')
 
 export class ObfuscationHelper {
+  private constructor() {}
+
   private static readonly SECRET_KEY: string = 'Wubbalubbadubdub. Rubber baby buggy bumpers!'
 
   static encrypt(value: any): string {
