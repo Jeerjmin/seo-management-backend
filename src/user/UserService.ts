@@ -49,7 +49,7 @@ export class UserService {
     response.status(200).send({ ...entity, accessToken: undefined })
   }
 
-  async skipOnboarding(request) {
+  async completeOnboarding(request) {
     const idCookie: number = CookieHelper.userIdCookie(request)
     const entity: UserDto = await this.userRepository.findOne({ where: { id: idCookie } })
 

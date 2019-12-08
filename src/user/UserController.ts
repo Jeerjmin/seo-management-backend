@@ -16,6 +16,6 @@ export class UserController {
   @UseGuards(ShopifyAuthGuard)
   @Post(ApiLayers.USERS + 'skip-onboarding')
   async skipOnboarding(@Req() request) {
-    await this.facade.skipOnboarding(request)
+    await this.facade.completeOnboarding(request)
   }
 }

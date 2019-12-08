@@ -19,7 +19,7 @@ export class UserFacade {
     this.service.handleFetch(request, response)
   }
 
-  skipOnboarding(request) {
-    this.service.skipOnboarding(request)
+  completeOnboarding(request) {
+    this.service.completeOnboarding(request)
   }
 }
