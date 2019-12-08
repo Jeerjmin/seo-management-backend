@@ -4,6 +4,7 @@ import { AnalyzerType } from './AnalyzerType'
 import { ErrorDto } from 'error/ErrorDto'
 import { AnalyzerParams } from './params/AnalyzerParams'
 import { AnalyzerDataFetcher } from './AnalyzerDataFetcher'
+import { AnalyzerRaportDto } from './dto/AnalyzerRaportDto'
 
 @Injectable()
 export class AnalyzerService {
@@ -28,5 +29,18 @@ export class AnalyzerService {
     }
 
     throw new HttpException(new ErrorDto(400, `Unknown analyzer type: ${typeParam}`), HttpStatus.BAD_REQUEST)
+  }
+
+  async generateRaport(dto: AnalyzerRaportDto) {
+    let results: Array<object> = []
+
+    for (const index in dto.options) {
+      if (dto.options.hasOwnProperty(index)) {
+        const analyzerResults = await this.handleFetch({ type: dto.options[index], fields: null })
+        results = [...results, analyzerResults]
+      }
+    }
+
+    return results
   }
 }
