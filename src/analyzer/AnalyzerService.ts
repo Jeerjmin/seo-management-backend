@@ -5,10 +5,18 @@ import { ErrorDto } from 'error/ErrorDto'
 import { AnalyzerParams } from './params/AnalyzerParams'
 import { AnalyzerDataFetcher } from './AnalyzerDataFetcher'
 import { AnalyzerRaportDto } from './dto/AnalyzerRaportDto'
+import { Repository } from 'typeorm'
+import { AnalyzerEntity } from './AnalyzerEntity'
+import { InjectRepository } from '@nestjs/typeorm'
+import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 
 @Injectable()
 export class AnalyzerService {
-  constructor(private readonly registry: AnalyzerRegistry, private readonly dataFetcher: AnalyzerDataFetcher) {}
+  constructor(
+    private readonly registry: AnalyzerRegistry,
+    private readonly dataFetcher: AnalyzerDataFetcher,
+    @InjectRepository(AnalyzerEntity) private readonly repository: Repository<AnalyzerEntity>,
+  ) {}
 
   async handleFetch(params: AnalyzerParams) {
     const typeParam = params.type
@@ -31,7 +39,8 @@ export class AnalyzerService {
     throw new HttpException(new ErrorDto(400, `Unknown analyzer type: ${typeParam}`), HttpStatus.BAD_REQUEST)
   }
 
-  async generateRaport(dto: AnalyzerRaportDto) {
+  async generateRaport(request, dto: AnalyzerRaportDto) {
+    const userId = CookieHelper.userIdCookie(request)
     let results: Array<object> = []
 
     for (const index in dto.options) {
@@ -41,6 +50,6 @@ export class AnalyzerService {
       }
     }
 
-    return results
+    return this.repository.save({ ownerId: userId, details: results })
   }
 }

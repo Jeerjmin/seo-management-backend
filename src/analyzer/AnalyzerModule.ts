@@ -7,6 +7,8 @@ import { AnalyzerFacade } from './AnalyzerFacade'
 import { AnalyzerService } from './AnalyzerService'
 import { HttpModule } from 'http/HttpModule'
 import { AnalyzerDataFetcher } from './AnalyzerDataFetcher'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { AnalyzerEntity } from './AnalyzerEntity'
 
 @Module({
   controllers: [AnalyzerController],
@@ -18,6 +20,6 @@ import { AnalyzerDataFetcher } from './AnalyzerDataFetcher'
     AnalyzerRegistry,
     AnalyzerDataFetcher,
   ],
-  imports: [UserModule, HttpModule],
+  imports: [UserModule, HttpModule, TypeOrmModule.forFeature([AnalyzerEntity])],
 })
 export class AnalyzerModule {}

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Req } from '@nestjs/common'
 import { AnalyzerService } from './AnalyzerService'
 import { AnalyzerParams } from './params/AnalyzerParams'
 import { AnalyzerRaportDto } from './dto/AnalyzerRaportDto'
@@ -12,8 +12,8 @@ export class AnalyzerFacade {
     return this.service.handleFetch(params)
   }
 
-  generateRaport(request, dto: AnalyzerRaportDto): object {
-    const raport = this.service.generateRaport(dto)
+  generateRaport(@Req() request, dto: AnalyzerRaportDto): object {
+    const raport = this.service.generateRaport(request, dto)
     this.userFacade.completeOnboarding(request)
 
     return raport
