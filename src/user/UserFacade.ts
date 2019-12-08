@@ -18,4 +18,8 @@ export class UserFacade {
   handleFetch(request, response) {
     this.service.handleFetch(request, response)
   }
+
+  skipOnboarding(request) {
+    this.service.skipOnboarding(request)
+  }
 }

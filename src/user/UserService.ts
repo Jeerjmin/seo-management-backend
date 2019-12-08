@@ -49,6 +49,15 @@ export class UserService {
     response.status(200).send({ ...entity, accessToken: undefined })
   }
 
+  async skipOnboarding(request) {
+    const idCookie: number = CookieHelper.userIdCookie(request)
+    const entity: UserDto = await this.userRepository.findOne({ where: { id: idCookie } })
+
+    entity.onboardingCompleted = true
+
+    await this.userRepository.save(entity)
+  }
+
   private getAndDecryptCookie(request, cookieName: string) {
     const rawCookie = CookieHelper.obtainCookie(request, cookieName)
     return ObfuscationHelper.decrypt(rawCookie)

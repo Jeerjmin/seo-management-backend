@@ -5,4 +5,5 @@ export class UserDto {
   originalDomain: string
   domain: string
   email: string
+  onboardingCompleted: boolean
 }

@@ -10,4 +10,5 @@ export class UserEntity {
   @Column() domain: string
   @Column() email: string
   @Column() @Exclude() accessToken: string
+  @Column({ default: false }) onboardingCompleted: boolean
 }
