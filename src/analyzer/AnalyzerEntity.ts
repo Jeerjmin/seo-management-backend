@@ -4,6 +4,6 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeor
 export class AnalyzerEntity {
   @PrimaryGeneratedColumn() id: number
   @Column() ownerId: number
-  @Column() @CreateDateColumn() createdAt: Date
+  @CreateDateColumn() createdAt: Date
   @Column({ type: 'json' }) details
 }

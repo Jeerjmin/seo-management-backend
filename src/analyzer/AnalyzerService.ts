@@ -52,4 +52,9 @@ export class AnalyzerService {
 
     return this.repository.save({ ownerId: userId, details: results })
   }
+
+  async fetchLatestReport(request) {
+    const userId = CookieHelper.userIdCookie(request)
+    return this.repository.findOne({ where: { id: userId }, order: { createdAt: 'DESC' } })
+  }
 }

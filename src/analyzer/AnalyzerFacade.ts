@@ -18,4 +18,8 @@ export class AnalyzerFacade {
 
     return report
   }
+
+  fetchLatestReport(@Req() request): object {
+    return this.service.fetchLatestReport(request)
+  }
 }

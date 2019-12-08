@@ -5,19 +5,23 @@ import { AnalyzerFacade } from './AnalyzerFacade'
 import { AnalyzerParams } from './params/AnalyzerParams'
 import { AnalyzerReportDto } from './dto/AnalyzerReportDto'
 
+@UseGuards(ShopifyAuthGuard)
 @Controller(ApiLayers.ANALYZERS)
 export class AnalyzerController {
   constructor(private readonly facade: AnalyzerFacade) {}
 
-  @UseGuards(ShopifyAuthGuard)
   @Get()
   fetchEndpoint(@Query() params: AnalyzerParams) {
     return this.facade.handleFetch(params)
   }
 
-  @UseGuards(ShopifyAuthGuard)
   @Post('generate-report')
   generateReport(@Req() request, @Body() dto: AnalyzerReportDto) {
     return this.facade.generateReport(request, dto)
+  }
+
+  @Get('report')
+  fetchLatest(@Req() request) {
+    return this.facade.fetchLatestReport(request)
   }
 }
