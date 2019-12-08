@@ -3,7 +3,7 @@ import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
 import { AnalyzerFacade } from './AnalyzerFacade'
 import { AnalyzerParams } from './params/AnalyzerParams'
-import { AnalyzerRaportDto } from './dto/AnalyzerRaportDto'
+import { AnalyzerReportDto } from './dto/AnalyzerReportDto'
 
 @Controller(ApiLayers.ANALYZERS)
 export class AnalyzerController {
@@ -16,8 +16,8 @@ export class AnalyzerController {
   }
 
   @UseGuards(ShopifyAuthGuard)
-  @Post('generate-raport')
-  generateRaport(@Req() request, @Body() dto: AnalyzerRaportDto) {
-    return this.facade.generateRaport(request, dto)
+  @Post('generate-report')
+  generateReport(@Req() request, @Body() dto: AnalyzerReportDto) {
+    return this.facade.generateReport(request, dto)
   }
 }

@@ -4,7 +4,7 @@ import { AnalyzerType } from './AnalyzerType'
 import { ErrorDto } from 'error/ErrorDto'
 import { AnalyzerParams } from './params/AnalyzerParams'
 import { AnalyzerDataFetcher } from './AnalyzerDataFetcher'
-import { AnalyzerRaportDto } from './dto/AnalyzerRaportDto'
+import { AnalyzerReportDto } from './dto/AnalyzerReportDto'
 import { Repository } from 'typeorm'
 import { AnalyzerEntity } from './AnalyzerEntity'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -39,7 +39,7 @@ export class AnalyzerService {
     throw new HttpException(new ErrorDto(400, `Unknown analyzer type: ${typeParam}`), HttpStatus.BAD_REQUEST)
   }
 
-  async generateRaport(request, dto: AnalyzerRaportDto) {
+  async generateReport(request, dto: AnalyzerReportDto) {
     const userId = CookieHelper.userIdCookie(request)
     let results: Array<object> = []
 

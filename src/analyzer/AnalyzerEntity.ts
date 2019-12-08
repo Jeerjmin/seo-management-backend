@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm'
 
-@Entity({ name: 'raports' })
+@Entity({ name: 'reports' })
 export class AnalyzerEntity {
   @PrimaryGeneratedColumn() id: number
   @Column() ownerId: number

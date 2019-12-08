@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator'
 
-export class AnalyzerRaportDto {
+export class AnalyzerReportDto {
   @IsNotEmpty() readonly options: Array<string>
 }

@@ -1,7 +1,7 @@
 import { Injectable, Req } from '@nestjs/common'
 import { AnalyzerService } from './AnalyzerService'
 import { AnalyzerParams } from './params/AnalyzerParams'
-import { AnalyzerRaportDto } from './dto/AnalyzerRaportDto'
+import { AnalyzerReportDto } from './dto/AnalyzerReportDto'
 import { UserFacade } from 'user/UserFacade'
 
 @Injectable()
@@ -12,10 +12,10 @@ export class AnalyzerFacade {
     return this.service.handleFetch(params)
   }
 
-  generateRaport(@Req() request, dto: AnalyzerRaportDto): object {
-    const raport = this.service.generateRaport(request, dto)
+  generateReport(@Req() request, dto: AnalyzerReportDto): object {
+    const report = this.service.generateReport(request, dto)
     this.userFacade.completeOnboarding(request)
 
-    return raport
+    return report
   }
 }
