@@ -19,7 +19,11 @@ export class AnalyzerFacade {
     return report
   }
 
-  fetchLatestReport(@Req() request): object {
+  fetchLatestReport(@Req() request): any {
     return this.service.fetchLatestReport(request)
+  }
+
+  fetchPenultReport(@Req() request, lastId: number): any {
+    return this.service.fetchPenultReport(request, lastId)
   }
 }

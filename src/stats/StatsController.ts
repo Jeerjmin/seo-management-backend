@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common'
+import { Controller, Get, UseGuards, Req } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
 import { StatsFacade } from './StatsFacade'
@@ -10,7 +10,7 @@ export class StatsController {
 
   @UseGuards(ShopifyAuthGuard)
   @Get()
-  async fetchStats(): Promise<StatsDto> {
-    return this.facade.generateOverallStats()
+  async fetchStats(@Req() request): Promise<StatsDto> {
+    return this.facade.generateOverallStats(request)
   }
 }

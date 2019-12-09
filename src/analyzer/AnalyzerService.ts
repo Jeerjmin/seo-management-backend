@@ -5,7 +5,7 @@ import { ErrorDto } from 'error/ErrorDto'
 import { AnalyzerParams } from './params/AnalyzerParams'
 import { AnalyzerDataFetcher } from './AnalyzerDataFetcher'
 import { AnalyzerReportDto } from './dto/AnalyzerReportDto'
-import { Repository } from 'typeorm'
+import { Repository, Not } from 'typeorm'
 import { AnalyzerEntity } from './AnalyzerEntity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CookieHelper } from 'infrastructure/helper/CookieHelper'
@@ -55,6 +55,11 @@ export class AnalyzerService {
 
   async fetchLatestReport(request) {
     const userId = CookieHelper.userIdCookie(request)
-    return this.repository.findOne({ where: { id: userId }, order: { createdAt: 'DESC' } })
+    return this.repository.findOne({ where: { ownerId: userId }, order: { createdAt: 'DESC' } })
+  }
+
+  async fetchPenultReport(request, lastId: number) {
+    const userId = CookieHelper.userIdCookie(request)
+    return this.repository.findOne({ where: { ownerId: userId, id: Not(lastId), order: { createdAt: 'DESC' } } })
   }
 }
