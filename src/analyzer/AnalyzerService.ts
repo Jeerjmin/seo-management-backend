@@ -62,4 +62,9 @@ export class AnalyzerService {
     const userId = CookieHelper.userIdCookie(request)
     return this.repository.findOne({ where: { ownerId: userId, id: Not(lastId), order: { createdAt: 'DESC' } } })
   }
+
+  async fetchReports(request): Promise<Array<any>> {
+    const userId = CookieHelper.userIdCookie(request)
+    return this.repository.find({ where: { ownerId: userId }, order: { createdAt: 'DESC' } })
+  }
 }

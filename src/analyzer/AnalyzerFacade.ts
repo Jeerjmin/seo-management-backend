@@ -26,4 +26,8 @@ export class AnalyzerFacade {
   fetchPenultReport(@Req() request, lastId: number): any {
     return this.service.fetchPenultReport(request, lastId)
   }
+
+  fetchReports(request): Promise<Array<any>> {
+    return this.service.fetchReports(request)
+  }
 }

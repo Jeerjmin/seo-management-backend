@@ -20,8 +20,8 @@ export class AnalyzerController {
     return this.facade.generateReport(request, dto)
   }
 
-  @Get('report')
+  @Get('reports')
   fetchLatest(@Req() request) {
-    return this.facade.fetchLatestReport(request)
+    return this.facade.fetchReports(request)
   }
 }

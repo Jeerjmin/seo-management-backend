@@ -35,11 +35,11 @@ export class StatsFacade {
   }
 
   private fetchPerformanceStats() {
-    return { value: 0, lastValue: 0, createdAt: this.formatDate() }
+    return { value: 'N/A', lastValue: 'N/A', createdAt: 'Never' }
   }
 
   private fetchSeoStats() {
-    return { value: 0, lastValue: 0, createdAt: this.formatDate() }
+    return { value: 'N/A', lastValue: 'N/A', createdAt: 'Never' }
   }
 
   private formatDate(input?) {
