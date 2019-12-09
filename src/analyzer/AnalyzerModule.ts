@@ -21,5 +21,6 @@ import { AnalyzerEntity } from './AnalyzerEntity'
     AnalyzerDataFetcher,
   ],
   imports: [UserModule, HttpModule, TypeOrmModule.forFeature([AnalyzerEntity])],
+  exports: [AnalyzerFacade],
 })
 export class AnalyzerModule {}

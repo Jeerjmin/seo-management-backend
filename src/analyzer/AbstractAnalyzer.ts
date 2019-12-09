@@ -13,8 +13,8 @@ export abstract class AbstractAnalyzer implements Analyzer {
     return this.compute(data)
   }
 
-  getAttributes(data: any, ...attrs: string[]): object {
-    this.compute(data)
+  async getAttributes(data: any, ...attrs: string[]): Promise<object> {
+    await this.compute(data)
     return pick(this.results, attrs)
   }
 }
