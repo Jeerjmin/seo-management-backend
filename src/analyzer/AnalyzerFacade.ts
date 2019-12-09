@@ -3,6 +3,7 @@ import { AnalyzerService } from './AnalyzerService'
 import { AnalyzerParams } from './params/AnalyzerParams'
 import { AnalyzerReportDto } from './dto/AnalyzerReportDto'
 import { UserFacade } from 'user/UserFacade'
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate'
 
 @Injectable()
 export class AnalyzerFacade {
@@ -27,7 +28,7 @@ export class AnalyzerFacade {
     return this.service.fetchPenultReport(request, lastId)
   }
 
-  fetchReports(request): Promise<Array<any>> {
-    return this.service.fetchReports(request)
+  fetchReports(request, options: IPaginationOptions): Promise<Pagination<any>> {
+    return this.service.fetchReports(request, options)
   }
 }

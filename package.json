@@ -39,6 +39,7 @@
     "fastify-cookie": "^3.3.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
+    "nestjs-typeorm-paginate": "^1.0.2",
     "pg": "^7.14.0",
     "query-string": "^6.9.0",
     "reflect-metadata": "^0.1.12",

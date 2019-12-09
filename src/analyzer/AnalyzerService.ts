@@ -9,6 +9,7 @@ import { Repository, Not } from 'typeorm'
 import { AnalyzerEntity } from './AnalyzerEntity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { CookieHelper } from 'infrastructure/helper/CookieHelper'
+import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate'
 
 @Injectable()
 export class AnalyzerService {
@@ -63,8 +64,13 @@ export class AnalyzerService {
     return this.repository.findOne({ where: { ownerId: userId, id: Not(lastId), order: { createdAt: 'DESC' } } })
   }
 
-  async fetchReports(request): Promise<Array<any>> {
+  async fetchReports(request, options: IPaginationOptions): Promise<Pagination<any>> {
     const userId = CookieHelper.userIdCookie(request)
-    return this.repository.find({ where: { ownerId: userId }, order: { createdAt: 'DESC' } })
+
+    const queryBuilder = this.repository.createQueryBuilder('report')
+    queryBuilder.where({ ownerId: userId })
+    queryBuilder.orderBy('report.createdAt', 'DESC')
+
+    return paginate<AnalyzerEntity>(queryBuilder, options)
   }
 }

@@ -21,7 +21,7 @@ export class AnalyzerController {
   }
 
   @Get('reports')
-  fetchLatest(@Req() request) {
-    return this.facade.fetchReports(request)
+  fetchLatest(@Req() request, @Query('page') page: number = 0, @Query('limit') limit: number = 15) {
+    return this.facade.fetchReports(request, { limit, page })
   }
 }
