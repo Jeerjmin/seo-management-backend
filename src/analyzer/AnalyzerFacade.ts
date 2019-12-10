@@ -31,4 +31,8 @@ export class AnalyzerFacade {
   fetchReports(request, options: IPaginationOptions): Promise<Pagination<any>> {
     return this.service.fetchReports(request, options)
   }
+
+  fetchReport(id: number) {
+    return this.service.fetchReport(id)
+  }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Query, Body, Post, Req } from '@nestjs/common'
+import { Controller, Get, UseGuards, Query, Body, Post, Req, Param } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
 import { AnalyzerFacade } from './AnalyzerFacade'
@@ -21,7 +21,12 @@ export class AnalyzerController {
   }
 
   @Get('reports')
-  fetchLatest(@Req() request, @Query('page') page: number = 0, @Query('limit') limit: number = 15) {
+  fetchLatest(@Req() request, @Query('page') page: number = 1, @Query('limit') limit: number = 15) {
     return this.facade.fetchReports(request, { limit, page })
+  }
+
+  @Get('reports/:id')
+  fetchReport(@Param('id') id: number) {
+    return this.facade.fetchReport(id)
   }
 }

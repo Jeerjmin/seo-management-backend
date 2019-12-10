@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common'
 import { AnalyzerRegistry } from './AnalyzerRegistry'
 import { AnalyzerType } from './AnalyzerType'
 import { ErrorDto } from 'error/ErrorDto'
@@ -66,11 +66,21 @@ export class AnalyzerService {
 
   async fetchReports(request, options: IPaginationOptions): Promise<Pagination<any>> {
     const userId = CookieHelper.userIdCookie(request)
-
     const queryBuilder = this.repository.createQueryBuilder('report')
+
     queryBuilder.where({ ownerId: userId })
     queryBuilder.orderBy('report.createdAt', 'DESC')
 
     return paginate<AnalyzerEntity>(queryBuilder, options)
+  }
+
+  async fetchReport(id: number) {
+    const entity = await this.repository.findOne({ where: { id } })
+
+    if (!entity) {
+      throw new NotFoundException()
+    }
+
+    return entity
   }
 }
