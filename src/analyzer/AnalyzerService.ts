@@ -75,6 +75,7 @@ export class AnalyzerService {
   }
 
   async fetchReport(id: number) {
+    // todo abstraction for not found
     const entity = await this.repository.findOne({ where: { id } })
 
     if (!entity) {
