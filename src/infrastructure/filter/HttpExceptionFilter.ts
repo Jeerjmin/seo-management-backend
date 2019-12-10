@@ -20,6 +20,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       return
     }
 
+    if (typeof exception.getStatus !== 'function') {
+      console.error(exception)
+    }
+
     const status: number = exception.getStatus()
     let message: string = exception.getResponse()
     let externalMessage: string

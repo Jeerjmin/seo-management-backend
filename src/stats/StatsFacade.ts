@@ -2,10 +2,11 @@ import { AnalyzerFacade } from 'analyzer/AnalyzerFacade'
 import { StatsDto } from './StatsDto'
 import { Injectable } from '@nestjs/common'
 import * as moment from 'moment'
+import { ReportFacade } from 'report/ReportFacade'
 
 @Injectable()
 export class StatsFacade {
-  constructor(private readonly analyzerFacade: AnalyzerFacade) {}
+  constructor(private readonly reportFacade: ReportFacade) {}
 
   async generateOverallStats(request): Promise<StatsDto> {
     const accessibility = await this.fetchAccessibilityStats(request)
@@ -16,10 +17,10 @@ export class StatsFacade {
   }
 
   private async fetchAccessibilityStats(request) {
-    const last = await this.analyzerFacade.fetchLatestReport(request)
+    const last = await this.reportFacade.fetchLatestReport(request)
 
     if (last) {
-      const penult = (await this.analyzerFacade.fetchPenultReport(request, last.id)) || last
+      const penult = (await this.reportFacade.fetchPenultReport(request, last.id)) || last
       return {
         value: last.details[0].filledAltTagsPercent,
         lastValue: penult.details[0].filledAltTagsPercent,

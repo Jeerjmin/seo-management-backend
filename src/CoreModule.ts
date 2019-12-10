@@ -8,6 +8,7 @@ import { UserModule } from 'user/UserModule'
 import { AnalyzerModule } from 'analyzer/AnalyzerModule'
 import { HttpModule } from 'http/HttpModule'
 import { StatsModule } from 'stats/StatsModule'
+import { ReportsModule } from 'report/ReportModule'
 
 @Module({
   providers: [
@@ -23,6 +24,7 @@ import { StatsModule } from 'stats/StatsModule'
     AnalyzerModule,
     HttpModule,
     StatsModule,
+    ReportsModule,
     TypeOrmModule.forRoot(ormconfig),
   ],
 })
