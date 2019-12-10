@@ -43,6 +43,6 @@ export class StatsFacade {
   }
 
   private formatDate(input?) {
-    return moment(input).format('DD/MM/YYYY')
+    return moment(input).format('MM/DD/YYYY')
   }
 }

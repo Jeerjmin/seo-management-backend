@@ -78,7 +78,7 @@ export class AnalyzerService {
     const entity = await this.repository.findOne({ where: { id } })
 
     if (!entity) {
-      throw new NotFoundException()
+      throw new HttpException(new ErrorDto(404, 'Not Found'), HttpStatus.NOT_FOUND)
     }
 
     return entity
