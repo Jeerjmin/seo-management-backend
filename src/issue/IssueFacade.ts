@@ -13,7 +13,7 @@ export class IssueFacade {
 
   fixIssues(dto: FixIssuesDto) {}
 
-  fetchIssues(request, options: IPaginationOptions) {
-    return this.service.handleFetchIssues(request, options)
+  fetchIssues(request, options: IPaginationOptions, type: string) {
+    return this.service.handleFetchIssues(request, options, type)
   }
 }
