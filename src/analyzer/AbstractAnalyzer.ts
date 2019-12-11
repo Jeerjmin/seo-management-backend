@@ -10,11 +10,13 @@ export abstract class AbstractAnalyzer implements Analyzer {
   }
 
   getResults(data: any): object {
-    return this.compute(data)
+    return this.getAttributes(data, ...this.getDefaultAttributes())
   }
 
   async getAttributes(data: any, ...attrs: string[]): Promise<object> {
     await this.compute(data)
     return pick(this.results, attrs)
   }
+
+  abstract getDefaultAttributes()
 }

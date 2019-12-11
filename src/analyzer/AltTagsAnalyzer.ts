@@ -3,8 +3,12 @@ import { pick, isEmpty, floor } from 'lodash'
 import * as cheerio from 'cheerio'
 
 export class AltTagsAnalyzer extends AbstractAnalyzer {
+  getDefaultAttributes() {
+    return ['overallAltTagsCount', 'overallFilledAltTagsCount', 'overallFilledAltTagsPercent']
+  }
+
   protected async compute(dataPromise: Promise<any>) {
-    let data = await dataPromise
+    const data = await dataPromise
     const { products, pages, articles, customCollections, smartCollections } = data
 
     let formattedProducts = []
@@ -35,9 +39,7 @@ export class AltTagsAnalyzer extends AbstractAnalyzer {
         {
           title: product.title,
           images,
-          altTagsCount,
-          filledAltTagsCount,
-          filledAltTagsPercent: this.calculatePercent(filledAltTagsCount, altTagsCount),
+          ...this.altTagsArray(altTagsCount, filledAltTagsCount),
         },
       ]
     })
@@ -52,9 +54,7 @@ export class AltTagsAnalyzer extends AbstractAnalyzer {
         ...formattedPages,
         {
           ...pick(page, 'id', 'title', 'body_html'),
-          altTagsCount: altTags.altTagsCount,
-          filledAltTagsCount: altTags.filledAltTagsCount,
-          filledAltTagsPercent: this.calculatePercent(altTags.filledAltTagsCount, altTags.altTagsCount),
+          ...this.altTagsArray(altTags.altTagsCount, altTags.filledAltTagsCount),
         },
       ]
     })
@@ -73,9 +73,7 @@ export class AltTagsAnalyzer extends AbstractAnalyzer {
           summary_html: article.summary_html,
           title: article.title,
           image: this.pickImage(article.image),
-          altTagsCount: altTags.altTagsCount,
-          filledAltTagsCount: altTags.filledAltTagsCount,
-          filledAltTagsPercent: this.calculatePercent(altTags.filledAltTagsCount, altTags.altTagsCount),
+          ...this.altTagsArray(altTags.altTagsCount, altTags.filledAltTagsCount),
         },
       ]
     })
@@ -89,16 +87,12 @@ export class AltTagsAnalyzer extends AbstractAnalyzer {
     overallFilledAltTagsCount += formattedCustomCollection.overallFilledAltTagsCount
     overallFilledAltTagsCount += formattedSmartCollection.overallFilledAltTagsCount
 
-    data = {
+    return super.compute({
       products: formattedProducts,
       pages: formattedPages,
       articles: formattedArticles,
       customCollections: formattedCustomCollection,
       smartCollections: formattedSmartCollection,
-    }
-
-    return super.compute({
-      ...data,
       overallAltTagsCount,
       overallFilledAltTagsCount,
       overallFilledAltTagsPercent: this.calculatePercent(overallFilledAltTagsCount, overallAltTagsCount),
@@ -151,9 +145,7 @@ export class AltTagsAnalyzer extends AbstractAnalyzer {
           title: collection.title,
           body_html: collection.body_html,
           image: this.pickImage(collection.image),
-          altTagsCount: altTags.altTagsCount,
-          filledAltTagsCount: altTags.filledAltTagsCount,
-          filledAltTagsPercent: this.calculatePercent(altTags.filledAltTagsCount, altTags.altTagsCount),
+          ...this.altTagsArray(altTags.altTagsCount, altTags.filledAltTagsCount),
         },
       ]
     })
@@ -163,6 +155,14 @@ export class AltTagsAnalyzer extends AbstractAnalyzer {
 
   private isAltTagPresent(altTagValue: string): boolean {
     return altTagValue !== null && altTagValue !== ''
+  }
+
+  private altTagsArray(altTagsCount: number, filledAltTagsCount: number) {
+    return {
+      altTagsCount,
+      filledAltTagsCount,
+      filledAltTagsPercent: this.calculatePercent(filledAltTagsCount, altTagsCount),
+    }
   }
 
   private calculatePercent(filledAltTagsCount: number, altTagsCount: number): number {

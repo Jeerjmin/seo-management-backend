@@ -24,14 +24,7 @@ export class AnalyzerService {
         return analyzer.getAttributes(dataToParse, ...fieldsParam.split(','))
       }
 
-      // todo improve
-      return analyzer.getAttributes(
-        dataToParse,
-        'altTagsCount',
-        'filledAltTagsCount',
-        'blankAltTagsCount',
-        'filledAltTagsPercent',
-      )
+      return analyzer.getResults(dataToParse)
     }
 
     throw new HttpException(new ErrorDto(400, `Unknown analyzer type: ${typeParam}`), HttpStatus.BAD_REQUEST)
