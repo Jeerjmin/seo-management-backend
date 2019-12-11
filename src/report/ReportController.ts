@@ -1,8 +1,10 @@
-import { Controller, Get, Param, Query, Req, Body, Post } from '@nestjs/common'
+import { Controller, Get, Param, Query, Req, Body, Post, UseGuards } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { ReportFacade } from './ReportFacade'
 import { ReportDto } from './dto/ReportDto'
+import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
 
+@UseGuards(ShopifyAuthGuard)
 @Controller(ApiLayers.REPORT)
 export class ReportController {
   constructor(private readonly facade: ReportFacade) {}

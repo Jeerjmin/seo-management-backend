@@ -7,7 +7,7 @@ import { UserFacade } from 'user/UserFacade'
 export class AnalyzerFacade {
   constructor(private readonly service: AnalyzerService, private readonly userFacade: UserFacade) {}
 
-  handleFetch(params: AnalyzerParams): any {
+  compute(params: AnalyzerParams): any {
     return this.service.handleFetch(params)
   }
 }

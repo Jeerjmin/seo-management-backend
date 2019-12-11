@@ -17,7 +17,7 @@ export class ReportFacade {
   }
 
   generateReport(request, dto: ReportDto) {
-    const analyzerResults = index => this.analyzerFacade.handleFetch({ type: dto.options[index], fields: null })
+    const analyzerResults = index => this.analyzerFacade.compute({ type: dto.options[index], fields: null })
     return this.service.generateReport(request, dto, analyzerResults)
   }
 

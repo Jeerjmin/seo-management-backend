@@ -13,4 +13,4 @@ import { ReportService } from './ReportService'
   imports: [AnalyzerModule, UserModule, TypeOrmModule.forFeature([ReportEntity])],
   exports: [ReportFacade],
 })
-export class ReportsModule {}
+export class ReportModule {}

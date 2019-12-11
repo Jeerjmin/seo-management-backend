@@ -1,5 +1,4 @@
 import { AbstractAnalyzer } from './AbstractAnalyzer'
-import { ArrayHelper } from 'infrastructure/helper/ArrayHelper'
 import { pick, isEmpty, floor } from 'lodash'
 import * as cheerio from 'cheerio'
 
@@ -8,121 +7,166 @@ export class AltTagsAnalyzer extends AbstractAnalyzer {
     let data = await dataPromise
     const { products, pages, articles, customCollections, smartCollections } = data
 
+    let formattedProducts = []
+    let formattedPages = []
+    let formattedArticles = []
+
+    let overallAltTagsCount = 0
+    let overallFilledAltTagsCount = 0
+
+    products.forEach(product => {
+      let altTagsCount = 0
+      let filledAltTagsCount = 0
+
+      const images = product.images.map(image => {
+        const altTags = this.countAltTags(image)
+
+        altTagsCount += altTags.altTagsCount
+        filledAltTagsCount += altTags.filledAltTagsCount
+
+        return pick(image, 'id', 'product_id', 'alt', 'src')
+      })
+
+      overallAltTagsCount += altTagsCount
+      overallFilledAltTagsCount += filledAltTagsCount
+
+      formattedProducts = [
+        ...formattedProducts,
+        {
+          title: product.title,
+          images,
+          altTagsCount,
+          filledAltTagsCount,
+          filledAltTagsPercent: this.calculatePercent(filledAltTagsCount, altTagsCount),
+        },
+      ]
+    })
+
+    pages.forEach(page => {
+      const altTags = this.countAltTags(null, page.body_html)
+
+      overallAltTagsCount += altTags.altTagsCount
+      overallFilledAltTagsCount += altTags.filledAltTagsCount
+
+      formattedPages = [
+        ...formattedPages,
+        {
+          ...pick(page, 'id', 'title', 'body_html'),
+          altTagsCount: altTags.altTagsCount,
+          filledAltTagsCount: altTags.filledAltTagsCount,
+          filledAltTagsPercent: this.calculatePercent(altTags.filledAltTagsCount, altTags.altTagsCount),
+        },
+      ]
+    })
+
+    articles.forEach(article => {
+      const altTags = this.countAltTags(article.image, article.body_html, article.summary_html)
+
+      overallAltTagsCount += altTags.altTagsCount
+      overallFilledAltTagsCount += altTags.filledAltTagsCount
+
+      formattedArticles = [
+        ...formattedArticles,
+        {
+          id: article.id,
+          body_html: article.body_html,
+          summary_html: article.summary_html,
+          title: article.title,
+          image: this.pickImage(article.image),
+          altTagsCount: altTags.altTagsCount,
+          filledAltTagsCount: altTags.filledAltTagsCount,
+          filledAltTagsPercent: this.calculatePercent(altTags.filledAltTagsCount, altTags.altTagsCount),
+        },
+      ]
+    })
+
+    const formattedCustomCollection = this.formatCollection(customCollections)
+    const formattedSmartCollection = this.formatCollection(smartCollections)
+
+    overallAltTagsCount += formattedCustomCollection.overallAltTagsCount
+    overallAltTagsCount += formattedSmartCollection.overallAltTagsCount
+
+    overallFilledAltTagsCount += formattedCustomCollection.overallFilledAltTagsCount
+    overallFilledAltTagsCount += formattedSmartCollection.overallFilledAltTagsCount
+
     data = {
-      products: ArrayHelper.combineArrays(products.map(product => product.images)).map(image =>
-        pick(image, 'id', 'product_id', 'alt', 'src'),
-      ),
-      pages: pages.map(page => pick(page, 'id', 'title', 'body_html')),
-      articles: articles.map(article => ({
-        id: article.id,
-        body_html: article.body_html,
-        summary_html: article.summary_html,
-        image: this.pickImage(article.image),
-      })),
-      customCollections: this.mapCollection(customCollections),
-      smartCollections: this.mapCollection(smartCollections),
-    }
-
-    let altTagsCount = 0
-    let filledAltTagsCount = 0
-
-    for (const product of data.products) {
-      altTagsCount++
-      if (this.isAltTagPresent(product.alt)) {
-        filledAltTagsCount++
-      }
-    }
-
-    for (const page of data.pages) {
-      this.eachImage(page.body_html, element => {
-        altTagsCount++
-        if (this.isAltTagPresent(element.attribs.alt)) {
-          filledAltTagsCount++
-        }
-      })
-    }
-
-    for (const article of data.articles) {
-      this.eachImage(article.body_html, element => {
-        altTagsCount++
-        if (this.isAltTagPresent(element.attribs.alt)) {
-          filledAltTagsCount++
-        }
-      })
-
-      this.eachImage(article.summary_html, element => {
-        altTagsCount++
-        if (this.isAltTagPresent(element.attribs.alt)) {
-          filledAltTagsCount++
-        }
-      })
-
-      if (!isEmpty(article.image)) {
-        altTagsCount++
-        if (this.isAltTagPresent(article.image.alt)) {
-          filledAltTagsCount++
-        }
-      }
-    }
-
-    for (const collection of data.customCollections) {
-      this.eachImage(collection.body_html, element => {
-        altTagsCount++
-        if (this.isAltTagPresent(element.attribs.alt)) {
-          filledAltTagsCount++
-        }
-      })
-
-      if (!isEmpty(collection.image)) {
-        altTagsCount++
-        if (this.isAltTagPresent(collection.image.alt)) {
-          filledAltTagsCount++
-        }
-      }
-    }
-
-    for (const collection of data.smartCollections) {
-      this.eachImage(collection.body_html, element => {
-        altTagsCount++
-        if (this.isAltTagPresent(element.attribs.alt)) {
-          filledAltTagsCount++
-        }
-      })
-
-      if (!isEmpty(collection.image)) {
-        altTagsCount++
-        if (this.isAltTagPresent(collection.image.alt)) {
-          filledAltTagsCount++
-        }
-      }
+      products: formattedProducts,
+      pages: formattedPages,
+      articles: formattedArticles,
+      customCollections: formattedCustomCollection,
+      smartCollections: formattedSmartCollection,
     }
 
     return super.compute({
-      altTagsCount,
-      filledAltTagsCount,
-      blankAltTagsCount: altTagsCount - filledAltTagsCount,
-      filledAltTagsPercent: floor((filledAltTagsCount * 100) / altTagsCount, 2),
+      ...data,
+      overallAltTagsCount,
+      overallFilledAltTagsCount,
+      overallFilledAltTagsPercent: this.calculatePercent(overallFilledAltTagsCount, overallAltTagsCount),
     })
   }
 
-  private eachImage(htmlContent, callback) {
-    if (htmlContent === null) return
+  private countAltTags(image: any, ...htmlSources): { altTagsCount: number; filledAltTagsCount: number } {
+    let localAltTagsCount = 0
+    let localFilledAltTagsCount = 0
 
-    const $ = cheerio.load(htmlContent)
-    $('img').each((_, element) => callback(element))
+    htmlSources.forEach(htmlSource => {
+      if (htmlSource === null) return
+
+      const $ = cheerio.load(htmlSource)
+      $('img').each((_, element) => {
+        localAltTagsCount++
+
+        if (this.isAltTagPresent(element.attribs.alt)) {
+          localFilledAltTagsCount++
+        }
+      })
+    })
+
+    if (!isEmpty(image)) {
+      localAltTagsCount++
+
+      if (this.isAltTagPresent(image.alt)) {
+        localFilledAltTagsCount++
+      }
+    }
+
+    return { altTagsCount: localAltTagsCount, filledAltTagsCount: localFilledAltTagsCount }
+  }
+
+  private formatCollection(collections) {
+    let formattedCollection = []
+    let overallAltTagsCount = 0
+    let overallFilledAltTagsCount = 0
+
+    collections.forEach(collection => {
+      const altTags = this.countAltTags(collection.image, collection.body_html)
+
+      overallAltTagsCount += altTags.altTagsCount
+      overallFilledAltTagsCount += altTags.filledAltTagsCount
+
+      formattedCollection = [
+        ...formattedCollection,
+        {
+          id: collection.id,
+          title: collection.title,
+          body_html: collection.body_html,
+          image: this.pickImage(collection.image),
+          altTagsCount: altTags.altTagsCount,
+          filledAltTagsCount: altTags.filledAltTagsCount,
+          filledAltTagsPercent: this.calculatePercent(altTags.filledAltTagsCount, altTags.altTagsCount),
+        },
+      ]
+    })
+
+    return { overallAltTagsCount, overallFilledAltTagsCount, collection: formattedCollection }
   }
 
   private isAltTagPresent(altTagValue: string): boolean {
     return altTagValue !== null && altTagValue !== ''
   }
 
-  private mapCollection(collectionToMap) {
-    return collectionToMap.map(collection => ({
-      id: collection.id,
-      title: collection.title,
-      body_html: collection.body_html,
-      image: this.pickImage(collection.image),
-    }))
+  private calculatePercent(filledAltTagsCount: number, altTagsCount: number): number {
+    return floor((filledAltTagsCount * 100) / altTagsCount, 2)
   }
 
   private pickImage(image) {
