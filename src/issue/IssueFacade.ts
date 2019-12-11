@@ -2,18 +2,12 @@ import { Injectable } from '@nestjs/common'
 import { IssueService } from './IssueService'
 import { IPaginationOptions } from 'nestjs-typeorm-paginate'
 import { FixIssuesDto } from './dto/FixIssuesDto'
-import { AnalyzerFacade } from 'analyzer/AnalyzerFacade'
-import { AnalyzerType } from 'analyzer/AnalyzerType'
 
 @Injectable()
 export class IssueFacade {
-  constructor(private readonly service: IssueService, private readonly analyzerFacade: AnalyzerFacade) {}
+  constructor(private readonly service: IssueService) {}
 
-  async generateIssues(request) {
-    const analyzerResults = await this.analyzerFacade.compute({
-      type: AnalyzerType.ALT_TAGS,
-      fields: 'products,pages,articles,customCollections,smartCollections',
-    })
+  async generateIssues(request, analyzerResults) {
     return this.service.generateIssues(request, analyzerResults)
   }
 

@@ -17,7 +17,14 @@ export class ReportService {
 
     for (const index in dto.options) {
       if (dto.options.hasOwnProperty(index)) {
-        results = [...results, await analyzerResults(index)]
+        results = [
+          ...results,
+          {
+            overallAltTagsCount: analyzerResults.overallAltTagsCount,
+            overallFilledAltTagsCount: analyzerResults.overallFilledAltTagsCount,
+            overallFilledAltTagsPercent: analyzerResults.overallFilledAltTagsPercent,
+          },
+        ]
       }
     }
 
