@@ -21,9 +21,10 @@ export class StatsFacade {
 
     if (last) {
       const penult = (await this.reportFacade.fetchPenultReport(request, last.id)) || last
+
       return {
-        value: last.details[0].filledAltTagsPercent,
-        lastValue: penult.details[0].filledAltTagsPercent,
+        value: last.details[0].overallFilledAltTagsPercent,
+        lastValue: penult.details[0].overallFilledAltTagsPercent,
         createdAt: this.formatDate(last.createdAt),
       }
     }

@@ -6,8 +6,10 @@ export class IssueEntity {
   @PrimaryGeneratedColumn() id: number
   @Column() ownerId: number
   @Column({ enum: IssueType }) type: string
-  @Column() imageSrc: string
+  @Column({ nullable: true }) imageSrc: string
   @Column() title: string
-  @Column() description: string
+  @Column({ nullable: true }) description: string
+  @Column() seoScore: number
+  @Column() seoIssues: number
   @CreateDateColumn() createdAt: Date
 }

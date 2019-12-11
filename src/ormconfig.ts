@@ -9,7 +9,7 @@ const config: ConnectionOptions = {
   database: 'seoinsights',
   entities: [__dirname + '/**/*Entity{.ts,.js}'],
 
-  synchronize: false,
+  synchronize: true,
   migrationsRun: false,
   logging: true,
   logger: 'file',

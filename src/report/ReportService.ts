@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 import { ReportDto } from './dto/ReportDto'
-import { Repository, Not } from 'typeorm'
+import { Repository, Not, FindManyOptions } from 'typeorm'
 import { ReportEntity } from './ReportEntity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate'
@@ -31,7 +31,14 @@ export class ReportService {
 
   async fetchPenultReport(request, lastId: number) {
     const userId = CookieHelper.userIdCookie(request)
-    return this.repository.findOne({ where: { ownerId: userId, id: Not(lastId), order: { createdAt: 'DESC' } } })
+    const options: FindManyOptions = {
+      where: { id: Not(lastId), ownerId: userId, order: { createdAt: 'DESC' } },
+    }
+
+    const entitiesCount: number = await this.repository.count(options)
+    const entities = await this.repository.find(options)
+
+    return entities[entitiesCount - 1]
   }
 
   async fetchReports(request, options: IPaginationOptions): Promise<Pagination<any>> {
