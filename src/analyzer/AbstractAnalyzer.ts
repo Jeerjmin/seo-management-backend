@@ -1,22 +1,21 @@
 import { pick } from 'lodash'
 import { Analyzer } from './Analyzer'
+import { AnalyzerFetcher } from './AnalyzerFetcher'
 
 export abstract class AbstractAnalyzer implements Analyzer {
-  protected results: object
+  async getResults(formatterType: string | number, ...attrs: Array<string>): Promise<any> {
+    const formatter = this.getFormatters()[formatterType]
 
-  protected compute(data: any): any {
-    this.results = data
-    return this.results
+    const fetchedData = await this.getFetcher().getFetchedData()
+    const computeResults = await formatter.format(fetchedData)
+
+    if (attrs.length === 0) {
+      return computeResults
+    }
+
+    return pick(computeResults, attrs)
   }
 
-  getResults(data: any): object {
-    return this.getAttributes(data, ...this.getDefaultAttributes())
-  }
-
-  async getAttributes(data: any, ...attrs: string[]): Promise<object> {
-    await this.compute(data)
-    return pick(this.results, attrs)
-  }
-
-  abstract getDefaultAttributes()
+  abstract getFetcher(): AnalyzerFetcher
+  abstract getFormatters(): any
 }

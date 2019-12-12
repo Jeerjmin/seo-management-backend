@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { AnalyzerService } from './AnalyzerService'
-import { AnalyzerParams } from './params/AnalyzerParams'
-import { UserFacade } from 'user/UserFacade'
 
 @Injectable()
 export class AnalyzerFacade {
-  constructor(private readonly service: AnalyzerService, private readonly userFacade: UserFacade) {}
+  constructor(private readonly service: AnalyzerService) {}
 
-  compute(params: AnalyzerParams): any {
-    return this.service.handleFetch(params)
+  getResults(analyzerType: string, formatterType: string | number, ...attrs: string[]): any {
+    return this.service.getResults(analyzerType, formatterType, ...attrs)
   }
 }

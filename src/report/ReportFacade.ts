@@ -5,6 +5,7 @@ import { IPaginationOptions } from 'nestjs-typeorm-paginate'
 import { ReportService } from './ReportService'
 import { IssueFacade } from 'issue/IssueFacade'
 import { AnalyzerType } from 'analyzer/AnalyzerType'
+import { AltTagsFormatterType } from 'analyzer/alt_tags/AltTagsFormatterType'
 
 @Injectable()
 export class ReportFacade {
@@ -23,11 +24,10 @@ export class ReportFacade {
   }
 
   async generateReport(request, dto: ReportDto) {
-    const altTagsAnalyzerResults = await this.analyzerFacade.compute({
-      type: AnalyzerType.ALT_TAGS,
-      fields:
-        'products,pages,articles,customCollections,smartCollections,overallAltTagsCount,overallFilledAltTagsCount,overallFilledAltTagsPercent',
-    })
+    const altTagsAnalyzerResults = await this.analyzerFacade.getResults(
+      AnalyzerType.ALT_TAGS,
+      AltTagsFormatterType.DEFAULT,
+    )
 
     await this.issueFacade.generateIssues(request, altTagsAnalyzerResults)
     return this.service.generateReport(request, dto, altTagsAnalyzerResults)

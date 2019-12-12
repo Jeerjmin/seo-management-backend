@@ -12,6 +12,8 @@ export class ReportService {
   constructor(@InjectRepository(ReportEntity) private readonly repository: Repository<ReportEntity>) {}
 
   async generateReport(request, dto: ReportDto, analyzerResults) {
+    const { overallAltTagsCount, overallFilledAltTagsCount, overallFilledAltTagsPercent } = analyzerResults
+
     const userId = CookieHelper.userIdCookie(request)
     let results: Array<object> = []
 
@@ -20,9 +22,9 @@ export class ReportService {
         results = [
           ...results,
           {
-            overallAltTagsCount: analyzerResults.overallAltTagsCount,
-            overallFilledAltTagsCount: analyzerResults.overallFilledAltTagsCount,
-            overallFilledAltTagsPercent: analyzerResults.overallFilledAltTagsPercent,
+            overallAltTagsCount,
+            overallFilledAltTagsCount,
+            overallFilledAltTagsPercent,
           },
         ]
       }

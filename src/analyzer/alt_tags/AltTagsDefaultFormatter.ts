@@ -1,14 +1,9 @@
-import { AbstractAnalyzer } from './AbstractAnalyzer'
+import { AnalyzerFormatter } from 'analyzer/AnalyzerFormatter'
 import { pick, isEmpty, floor } from 'lodash'
 import * as cheerio from 'cheerio'
 
-export class AltTagsAnalyzer extends AbstractAnalyzer {
-  getDefaultAttributes() {
-    return ['overallAltTagsCount', 'overallFilledAltTagsCount', 'overallFilledAltTagsPercent']
-  }
-
-  protected async compute(dataPromise: Promise<any>) {
-    const data = await dataPromise
+export class AltTagsDefaultFormatter implements AnalyzerFormatter {
+  format(data: any) {
     const { products, pages, articles, customCollections, smartCollections } = data
 
     let formattedProducts = []
@@ -87,7 +82,7 @@ export class AltTagsAnalyzer extends AbstractAnalyzer {
     overallFilledAltTagsCount += formattedCustomCollection.overallFilledAltTagsCount
     overallFilledAltTagsCount += formattedSmartCollection.overallFilledAltTagsCount
 
-    return super.compute({
+    return {
       products: formattedProducts,
       pages: formattedPages,
       articles: formattedArticles,
@@ -96,7 +91,7 @@ export class AltTagsAnalyzer extends AbstractAnalyzer {
       overallAltTagsCount,
       overallFilledAltTagsCount,
       overallFilledAltTagsPercent: this.calculatePercent(overallFilledAltTagsCount, overallAltTagsCount),
-    })
+    }
   }
 
   private countAltTags(image: any, ...htmlSources): { altTagsCount: number; filledAltTagsCount: number } {

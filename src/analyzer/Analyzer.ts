@@ -1,5 +1,4 @@
 export interface Analyzer {
-  getResults(data: any): object
-  getAttributes(data: any, ...attrs: string[]): object
-  getDefaultAttributes(): Array<string>
+  getResults(formatterType?: string | number, ...attrs: Array<string>): Promise<any>
+  getFormatters(): any
 }

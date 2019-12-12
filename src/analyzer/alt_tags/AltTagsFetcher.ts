@@ -1,16 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { AnalyzerFetcher } from 'analyzer/AnalyzerFetcher'
 import { HttpService } from 'http/HttpService'
+import { HttpException, HttpStatus } from '@nestjs/common'
 import { ErrorDto } from 'error/ErrorDto'
 
-@Injectable()
-export class AnalyzerDataFetcher {
+export class AltTagsFetcher implements AnalyzerFetcher {
   constructor(private readonly httpService: HttpService) {}
 
-  async getDataToParse() {
-    return this.fetchData()
-  }
-
-  private async fetchData(): Promise<object> {
+  async getFetchedData(): Promise<object> {
     const products = await this.httpService.get('/products.json')
     const pages = await this.httpService.get('/pages.json')
     const articles = await this.httpService.get('/articles.json')
@@ -27,7 +23,11 @@ export class AnalyzerDataFetcher {
       }
     } catch (error) {
       throw new HttpException(
-        new ErrorDto(422, 'There is a problem with Shopify API. Try again in a few minutes.', error),
+        new ErrorDto(
+          HttpStatus.UNPROCESSABLE_ENTITY,
+          'There is a problem with Shopify API. Try again in a few minutes.',
+          error,
+        ),
         HttpStatus.UNPROCESSABLE_ENTITY,
       )
     }
