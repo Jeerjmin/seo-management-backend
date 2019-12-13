@@ -7,6 +7,7 @@ import { IssueFacade } from 'issue/IssueFacade'
 import { AnalyzerType } from 'analyzer/AnalyzerType'
 import { AltTagsFormatterType } from 'analyzer/alt_tags/AltTagsFormatterType'
 import { UserFacade } from 'user/UserFacade'
+import { findIndex } from 'lodash'
 
 @Injectable()
 export class ReportFacade {
@@ -26,26 +27,45 @@ export class ReportFacade {
   }
 
   async generateReport(request, dto: ReportDto) {
-    const altTagsAnalyzerResults = await this.analyzerFacade.getResults(
-      AnalyzerType.ALT_TAGS,
-      AltTagsFormatterType.DEFAULT,
-    )
+    const altTagsIndex = findIndex(dto.options, _ => _ === AnalyzerType.ALT_TAGS)
+    let reportResults = {}
 
-    const overallFormatAltTags = await this.analyzerFacade.getResults(
-      AnalyzerType.ALT_TAGS,
-      AltTagsFormatterType.OVERALL,
-      altTagsAnalyzerResults,
-    )
+    if (altTagsIndex !== -1) {
+      const altTagsAnalyzerResults = await this.analyzerFacade.getResults(
+        AnalyzerType.ALT_TAGS,
+        AltTagsFormatterType.DEFAULT,
+      )
 
-    const unityFormatAltTags = await this.analyzerFacade.getResults(
-      AnalyzerType.ALT_TAGS,
-      AltTagsFormatterType.UNITY,
-      altTagsAnalyzerResults,
-    )
+      const overallFormatAltTags = await this.analyzerFacade.getResults(
+        AnalyzerType.ALT_TAGS,
+        AltTagsFormatterType.OVERALL,
+        altTagsAnalyzerResults,
+      )
 
-    await this.issueFacade.generateIssues(request, unityFormatAltTags)
+      reportResults = { ...reportResults, ...overallFormatAltTags }
+
+      const unityFormatAltTags = await this.analyzerFacade.getResults(
+        AnalyzerType.ALT_TAGS,
+        AltTagsFormatterType.UNITY,
+        altTagsAnalyzerResults,
+      )
+
+      await this.issueFacade.generateIssues(request, unityFormatAltTags)
+    }
+
+    // tslint:disable-next-line: forin
+    for (const optionIndex in dto.options) {
+      const option = dto.options[optionIndex]
+      if (option === AnalyzerType.ALT_TAGS) continue
+
+      const type: AnalyzerType = AnalyzerType[option] as AnalyzerType
+      const analyzerResults = await this.analyzerFacade.getResults(type, 'DEFAULT')
+
+      reportResults = { ...reportResults, ...analyzerResults }
+    }
+
     await this.userFacade.completeOnboarding(request)
-    return this.service.generateReport(request, dto, overallFormatAltTags)
+    return this.service.generateReport(request, dto, reportResults)
   }
 
   fetchLatestReport(request) {

@@ -13,15 +13,8 @@ export class ReportService {
 
   async generateReport(request, dto: ReportDto, analyzerResults) {
     const userId = CookieHelper.userIdCookie(request)
-    let results: Array<object> = []
 
-    for (const index in dto.options) {
-      if (dto.options.hasOwnProperty(index)) {
-        results = [...results, analyzerResults]
-      }
-    }
-
-    return this.repository.save({ ownerId: userId, details: results })
+    return this.repository.save({ ownerId: userId, details: analyzerResults })
   }
 
   async fetchLatestReport(request) {

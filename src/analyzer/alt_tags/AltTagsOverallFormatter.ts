@@ -6,9 +6,9 @@ export class AltTagsOverallFormatter extends AltTagsDefaultFormatter implements 
     const { overallAltTagsCount, overallFilledAltTagsCount, overallFilledAltTagsPercent } = super.format(data)
 
     return {
-      overallAltTagsCount,
-      overallFilledAltTagsCount,
-      overallFilledAltTagsPercent,
+      'Alt tags count': overallAltTagsCount,
+      'Filled alt tags count': overallFilledAltTagsCount,
+      'Accessibility Score': overallFilledAltTagsPercent,
     }
   }
 }
