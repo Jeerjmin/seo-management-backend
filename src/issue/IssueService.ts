@@ -18,7 +18,7 @@ export class IssueService {
       this.repository.save({
         ownerId: userId,
         type: IssueType[element.type] as IssueType,
-        imageSrc: element.src || element.image.src,
+        imageSrc: element.image ? element.image.src : element.src,
         title: element.title,
         description: '',
         seoScore: element.filledAltTagsPercent,

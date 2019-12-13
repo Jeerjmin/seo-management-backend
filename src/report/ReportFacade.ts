@@ -26,7 +26,7 @@ export class ReportFacade {
   async generateReport(request, dto: ReportDto) {
     const altTagsAnalyzerResults = await this.analyzerFacade.getResults(
       AnalyzerType.ALT_TAGS,
-      AltTagsFormatterType.OVERALL,
+      AltTagsFormatterType.DEFAULT,
     )
 
     const overallFormatAltTags = await this.analyzerFacade.getResults(

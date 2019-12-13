@@ -17,7 +17,7 @@ export class ReportService {
 
     for (const index in dto.options) {
       if (dto.options.hasOwnProperty(index)) {
-        results = [...results, ...analyzerResults]
+        results = [...results, analyzerResults]
       }
     }
 
