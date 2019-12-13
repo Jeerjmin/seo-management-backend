@@ -2,6 +2,7 @@ import { AnalyzerFetcher } from 'analyzer/AnalyzerFetcher'
 import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 import { HttpService } from 'http/HttpService'
 import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
+import { floor } from 'lodash'
 
 export class PerformanceFetcher implements AnalyzerFetcher {
   async getFetchedData(dependencies): Promise<object> {
@@ -19,7 +20,7 @@ export class PerformanceFetcher implements AnalyzerFetcher {
     const lighthouse = results.data.lighthouseResult
 
     return {
-      'Performance Score': lighthouse.categories.performance.score * 100,
+      'Performance Score': floor(lighthouse.categories.performance.score * 100, 2),
       'First Contentful Paint': lighthouse.audits['first-contentful-paint'].displayValue,
       'Speed Index': lighthouse.audits['speed-index'].displayValue,
       'Time To Interactive': lighthouse.audits.interactive.displayValue,
