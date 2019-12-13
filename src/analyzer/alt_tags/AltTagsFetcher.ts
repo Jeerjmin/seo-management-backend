@@ -1,17 +1,16 @@
 import { AnalyzerFetcher } from 'analyzer/AnalyzerFetcher'
-import { HttpService } from 'http/HttpService'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ErrorDto } from 'error/ErrorDto'
 
 export class AltTagsFetcher implements AnalyzerFetcher {
-  constructor(private readonly httpService: HttpService) {}
+  async getFetchedData(dependencies): Promise<object> {
+    const httpService = dependencies[0]
 
-  async getFetchedData(): Promise<object> {
-    const products = await this.httpService.get('/products.json')
-    const pages = await this.httpService.get('/pages.json')
-    const articles = await this.httpService.get('/articles.json')
-    const customCollections = await this.httpService.get('/custom_collections.json')
-    const smartCollections = await this.httpService.get('/smart_collections.json')
+    const products = await httpService.get('/products.json')
+    const pages = await httpService.get('/pages.json')
+    const articles = await httpService.get('/articles.json')
+    const customCollections = await httpService.get('/custom_collections.json')
+    const smartCollections = await httpService.get('/smart_collections.json')
 
     try {
       return {

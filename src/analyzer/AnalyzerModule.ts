@@ -8,7 +8,7 @@ import { AnalyzerService } from './AnalyzerService'
 
 @Module({
   controllers: [AnalyzerController],
-  providers: [AnalyzerRegistry, AnalyzerFacade, AnalyzerService, AnalyzerModuleInitListener, AnalyzerRegistry],
+  providers: [AnalyzerRegistry, AnalyzerFacade, AnalyzerService, AnalyzerRegistry, AnalyzerModuleInitListener],
   imports: [UserModule],
   exports: [AnalyzerFacade],
 })

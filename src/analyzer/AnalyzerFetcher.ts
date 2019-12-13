@@ -1,3 +1,3 @@
 export interface AnalyzerFetcher {
-  getFetchedData(): any
+  getFetchedData(...dependencies: any[]): any
 }

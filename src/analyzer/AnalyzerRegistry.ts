@@ -6,8 +6,8 @@ import { AnalyzerType } from './AnalyzerType'
 export class AnalyzerRegistry {
   private readonly analyzers: Map<AnalyzerType, Analyzer> = new Map<AnalyzerType, Analyzer>()
 
-  register(...analyzers: Array<{ type: AnalyzerType; instance: Analyzer }>): void {
-    analyzers.forEach(analyzer => {
+  register(...specifiedAnalyzers: Array<{ type: AnalyzerType; instance: Analyzer }>): void {
+    specifiedAnalyzers.forEach(analyzer => {
       this.analyzers.set(analyzer.type, analyzer.instance)
     })
   }

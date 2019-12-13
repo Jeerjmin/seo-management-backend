@@ -26,11 +26,23 @@ export class ReportFacade {
   async generateReport(request, dto: ReportDto) {
     const altTagsAnalyzerResults = await this.analyzerFacade.getResults(
       AnalyzerType.ALT_TAGS,
-      AltTagsFormatterType.DEFAULT,
+      AltTagsFormatterType.OVERALL,
     )
 
-    await this.issueFacade.generateIssues(request, altTagsAnalyzerResults)
-    return this.service.generateReport(request, dto, altTagsAnalyzerResults)
+    const overallFormatAltTags = await this.analyzerFacade.getResults(
+      AnalyzerType.ALT_TAGS,
+      AltTagsFormatterType.OVERALL,
+      altTagsAnalyzerResults,
+    )
+
+    const unityFormatAltTags = await this.analyzerFacade.getResults(
+      AnalyzerType.ALT_TAGS,
+      AltTagsFormatterType.UNITY,
+      altTagsAnalyzerResults,
+    )
+
+    await this.issueFacade.generateIssues(request, unityFormatAltTags)
+    return this.service.generateReport(request, dto, overallFormatAltTags)
   }
 
   fetchLatestReport(request) {

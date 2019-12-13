@@ -3,10 +3,15 @@ import { Analyzer } from './Analyzer'
 import { AnalyzerFetcher } from './AnalyzerFetcher'
 
 export abstract class AbstractAnalyzer implements Analyzer {
-  async getResults(formatterType: string | number, ...attrs: Array<string>): Promise<any> {
+  async getResults(
+    formatterType: string | number,
+    data: any,
+    dependencies: any[],
+    ...attrs: Array<string>
+  ): Promise<any> {
     const formatter = this.getFormatters()[formatterType]
 
-    const fetchedData = await this.getFetcher().getFetchedData()
+    const fetchedData = data ? data : await this.getFetcher().getFetchedData(dependencies)
     const computeResults = await formatter.format(fetchedData)
 
     if (attrs.length === 0) {

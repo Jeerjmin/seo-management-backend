@@ -1,4 +1,5 @@
 export enum AltTagsFormatterType {
-  DEFAULT,
-  OVERALL,
+  DEFAULT = 'DEFAULT',
+  OVERALL = 'OVERALL',
+  UNITY = 'UNITY',
 }
