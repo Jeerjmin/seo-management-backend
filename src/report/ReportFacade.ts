@@ -6,6 +6,7 @@ import { ReportService } from './ReportService'
 import { IssueFacade } from 'issue/IssueFacade'
 import { AnalyzerType } from 'analyzer/AnalyzerType'
 import { AltTagsFormatterType } from 'analyzer/alt_tags/AltTagsFormatterType'
+import { UserFacade } from 'user/UserFacade'
 
 @Injectable()
 export class ReportFacade {
@@ -13,6 +14,7 @@ export class ReportFacade {
     private readonly analyzerFacade: AnalyzerFacade,
     private readonly service: ReportService,
     private readonly issueFacade: IssueFacade,
+    private readonly userFacade: UserFacade,
   ) {}
 
   fetchReports(request, options: IPaginationOptions) {
@@ -42,6 +44,7 @@ export class ReportFacade {
     )
 
     await this.issueFacade.generateIssues(request, unityFormatAltTags)
+    await this.userFacade.completeOnboarding(request)
     return this.service.generateReport(request, dto, overallFormatAltTags)
   }
 
