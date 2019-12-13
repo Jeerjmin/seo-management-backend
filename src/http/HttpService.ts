@@ -45,6 +45,10 @@ export class HttpService {
     return this.axiosInstance.post(url, data, config)
   }
 
+  getRequest() {
+    return this.fastifyRequest
+  }
+
   private decryptCookie(cookieName: string) {
     const rawCookie: string = CookieHelper.obtainCookie(this.fastifyRequest, cookieName)
     return ObfuscationHelper.decrypt(rawCookie)

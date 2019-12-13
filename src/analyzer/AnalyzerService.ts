@@ -8,7 +8,7 @@ import { HttpService } from 'http/HttpService'
 export class AnalyzerService {
   constructor(private readonly registry: AnalyzerRegistry, private readonly httpService: HttpService) {}
 
-  async getResults(analyzerType: string, formatterType: string | number, data?: any, ...attrs: string[]) {
+  async getResults(analyzerType: string, formatterType: string | number = 'DEFAULT', data?: any, ...attrs: string[]) {
     const type: AnalyzerType = AnalyzerType[analyzerType] as AnalyzerType
     const isTypeValid = type !== undefined && isNaN(+analyzerType)
 
