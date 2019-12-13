@@ -9,11 +9,11 @@ declare interface StatsType {
 export class StatsDto {
   @Expose({ name: 'Accessibility' }) private readonly accessibility: StatsType
   @Expose({ name: 'Performance' }) private readonly performance: StatsType
-  @Expose({ name: 'SEO' }) private readonly seo: StatsType
+  @Expose({ name: 'Best Practices' }) private readonly bestPractices: StatsType
 
-  constructor(accessibility: StatsType, performance: StatsType, seo: StatsType) {
+  constructor(accessibility: StatsType, performance: StatsType, bestPractices: StatsType) {
     this.accessibility = accessibility
     this.performance = performance
-    this.seo = seo
+    this.bestPractices = bestPractices
   }
 }

@@ -9,39 +9,32 @@ export class StatsFacade {
   constructor(private readonly reportFacade: ReportFacade) {}
 
   async generateOverallStats(request): Promise<StatsDto> {
-    const accessibility = await this.fetchAccessibilityStats(request)
-    const performance = this.fetchPerformanceStats()
-    const seo = this.fetchSeoStats()
-
-    return new StatsDto(accessibility, performance, seo)
-  }
-
-  private async fetchAccessibilityStats(request) {
     const last = await this.reportFacade.fetchLatestReport(request)
+    let penult = last
 
     if (last) {
-      const penult = (await this.reportFacade.fetchPenultReport(request, last.id)) || last
-
-      return {
-        value: last.details[0].overallFilledAltTagsPercent,
-        lastValue: penult.details[0].overallFilledAltTagsPercent,
-        createdAt: this.formatDate(last.createdAt),
-      }
+      penult = (await this.reportFacade.fetchPenultReport(request, last.id)) || last
     }
 
-    return {
-      value: 'N/A',
-      lastValue: 'N/A',
-      createdAt: 'Never',
-    }
+    const accessibility = this.formatStats('Accessibility', last, penult)
+    const performance = this.formatStats('Performance', last, penult)
+    const bestPractices = this.formatStats('Best Practices', last, penult)
+
+    return new StatsDto(accessibility, performance, bestPractices)
   }
 
-  private fetchPerformanceStats() {
-    return { value: 'N/A', lastValue: 'N/A', createdAt: 'Never' }
-  }
-
-  private fetchSeoStats() {
-    return { value: 'N/A', lastValue: 'N/A', createdAt: 'Never' }
+  private formatStats(feature, last, penult) {
+    return last
+      ? {
+          value: last.details[`${feature} Score`] || 'N/A',
+          lastValue: penult.details[`${feature} Score`] || 'N/A',
+          createdAt: this.formatDate(last.createdAt),
+        }
+      : {
+          value: 'N/A',
+          lastValue: 'N/A',
+          createdAt: 'Never',
+        }
   }
 
   private formatDate(input?) {
