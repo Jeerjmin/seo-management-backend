@@ -16,9 +16,9 @@ export class StatsFacade {
       penult = (await this.reportFacade.fetchPenultReport(request, last.id)) || last
     }
 
-    const accessibility = this.formatStats('Accessibility', last, penult)
-    const performance = this.formatStats('Performance', last, penult)
-    const bestPractices = this.formatStats('Best Practices', last, penult)
+    const accessibility = this.formatStats('accessibilityScore', last, penult)
+    const performance = this.formatStats('performanceScore', last, penult)
+    const bestPractices = this.formatStats('bestPracticesScore', last, penult)
 
     return new StatsDto(accessibility, performance, bestPractices)
   }
@@ -26,8 +26,8 @@ export class StatsFacade {
   private formatStats(feature, last, penult) {
     return last
       ? {
-          value: last.details[`${feature} Score`] || 'N/A',
-          lastValue: penult.details[`${feature} Score`] || 'N/A',
+          value: last.details[feature] || 'N/A',
+          lastValue: penult.details[feature] || 'N/A',
           createdAt: this.formatDate(last.createdAt),
         }
       : {
