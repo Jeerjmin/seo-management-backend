@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { AnalyzerFacade } from 'analyzer/AnalyzerFacade'
-import { ReportDto } from './dto/ReportDto'
+import { ReportCreateDto } from './dto/ReportCreateDto'
 import { IPaginationOptions } from 'nestjs-typeorm-paginate'
 import { ReportService } from './ReportService'
 import { IssueFacade } from 'issue/IssueFacade'
@@ -26,7 +26,7 @@ export class ReportFacade {
     return this.service.fetchReport(id)
   }
 
-  async generateReport(request, dto: ReportDto) {
+  async generateReport(request, dto: ReportCreateDto) {
     const altTagsIndex = findIndex(dto.options, _ => _ === AnalyzerType.ALT_TAGS)
     let reportResults = {}
 
@@ -65,7 +65,7 @@ export class ReportFacade {
     }
 
     await this.userFacade.completeOnboarding(request)
-    return this.service.generateReport(request, dto, reportResults)
+    return this.service.generateReport(request, reportResults)
   }
 
   fetchLatestReport(request) {

@@ -1,8 +1,10 @@
-import { Controller, Get, Param, Query, Req, Body, Post, UseGuards } from '@nestjs/common'
+import { Controller, Get, Param, Query, Req, Body, Post, UseGuards, UseInterceptors } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { ReportFacade } from './ReportFacade'
-import { ReportDto } from './dto/ReportDto'
+import { ReportCreateDto } from './dto/ReportCreateDto'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
+import { ReportDto } from './dto/ReportDto'
+import { TransformInterceptor } from 'infrastructure/interceptor/TransformInterceptor'
 
 @UseGuards(ShopifyAuthGuard)
 @Controller(ApiLayers.REPORT)
@@ -10,7 +12,7 @@ export class ReportController {
   constructor(private readonly facade: ReportFacade) {}
 
   @Post('generate-report')
-  generateReport(@Req() request, @Body() dto: ReportDto) {
+  generateReport(@Req() request, @Body() dto: ReportCreateDto) {
     return this.facade.generateReport(request, dto)
   }
 
@@ -20,7 +22,8 @@ export class ReportController {
   }
 
   @Get(':id')
-  fetchReport(@Param('id') id: number) {
+  @UseInterceptors(new TransformInterceptor(ReportDto))
+  fetchReport(@Param('id') id: number): Promise<ReportDto> {
     return this.facade.fetchReport(id)
   }
 }

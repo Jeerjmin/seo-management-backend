@@ -1,5 +1,10 @@
-import { IsNotEmpty } from 'class-validator'
+import { Type } from 'class-transformer'
+import { ReportDetailsDto } from './ReportDetailsDto'
 
 export class ReportDto {
-  @IsNotEmpty() readonly options: Array<string>
+  id: number
+  ownerId: number
+  createdAt: Date
+  @Type(() => ReportDetailsDto)
+  details: ReportDetailsDto
 }
