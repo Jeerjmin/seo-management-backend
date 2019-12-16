@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 import { Repository, Not, FindManyOptions } from 'typeorm'
 import { ReportEntity } from './ReportEntity'
@@ -6,10 +6,14 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate'
 import { RepositoryHelper } from 'infrastructure/helper/RepositoryHelper'
 import { ReportDto } from './dto/ReportDto'
+import { ReportParamsValidator } from './ReportParamsValidator'
 
 @Injectable()
 export class ReportService {
-  constructor(@InjectRepository(ReportEntity) private readonly repository: Repository<ReportEntity>) {}
+  constructor(
+    @InjectRepository(ReportEntity) private readonly repository: Repository<ReportEntity>,
+    private readonly paramsValidator: ReportParamsValidator,
+  ) {}
 
   async generateReport(request, analyzerResults) {
     const userId = CookieHelper.userIdCookie(request)
@@ -68,7 +72,12 @@ export class ReportService {
   }
 
   async fetchReport(id: number): Promise<ReportDto> {
-    // param validation
+    const isValid = this.paramsValidator.isValid(id)
+
+    if (!isValid) {
+      throw new BadRequestException()
+    }
+
     return RepositoryHelper.findOneOrThrow(this.repository, { where: { id } })
   }
 }
