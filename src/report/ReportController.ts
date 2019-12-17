@@ -1,10 +1,12 @@
-import { Controller, Get, Param, Query, Req, Body, Post, UseGuards, UseInterceptors } from '@nestjs/common'
+import { Controller, Get, Param, Query, Req, Body, Post, UseGuards, UseInterceptors, Res } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { ReportFacade } from './ReportFacade'
 import { ReportCreateDto } from './dto/ReportCreateDto'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
 import { ReportDto } from './dto/ReportDto'
 import { TransformInterceptor } from 'infrastructure/interceptor/TransformInterceptor'
+import { FastifyReply } from 'fastify'
+import { Http2ServerResponse } from 'http2'
 
 @UseGuards(ShopifyAuthGuard)
 @Controller(ApiLayers.REPORT)
@@ -12,8 +14,8 @@ export class ReportController {
   constructor(private readonly facade: ReportFacade) {}
 
   @Post('generate-report')
-  async generateReport(@Body() dto: ReportCreateDto) {
-    return this.facade.generateReport(dto)
+  generateReport(@Body() dto: ReportCreateDto, @Res() response: FastifyReply<Http2ServerResponse>) {
+    return this.facade.generateReport(dto, response)
   }
 
   @Get()
@@ -22,8 +24,8 @@ export class ReportController {
   }
 
   @Get('queue/:id')
-  async fetchReportStatus(@Param('id') id: number) {
-    return this.facade.fetchReportStatus(id)
+  async fetchReportStatus(@Req() request, @Param('id') id: number) {
+    return this.facade.fetchReportStatus(request, id)
   }
 
   @Get(':id')

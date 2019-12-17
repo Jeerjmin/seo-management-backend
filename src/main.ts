@@ -4,9 +4,7 @@ import { CoreModule } from './CoreModule'
 import { HttpExceptionFilter } from 'infrastructure/filter/HttpExceptionFilter'
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(CoreModule, new FastifyAdapter(), {
-    logger: ['debug', 'warn', 'verbose', 'error', 'log'],
-  })
+  const app = await NestFactory.create<NestFastifyApplication>(CoreModule, new FastifyAdapter())
 
   app.register(require('fastify-cookie'))
   app.useGlobalFilters(new HttpExceptionFilter())
@@ -14,6 +12,8 @@ async function bootstrap() {
   app.enableCors({
     credentials: true,
     methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE'],
+    allowedHeaders: ['Cache-Control', 'Content-Type'],
+    exposedHeaders: ['Location'],
     origin: process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://seoinsights.co',
   })
 

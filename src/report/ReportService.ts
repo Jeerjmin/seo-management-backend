@@ -20,11 +20,11 @@ export class ReportService {
 
     const entity = await this.repository.save(
       new ReportEntity(userId, {
-        accessibilityScore: Number(analyzerResults['Accessibility Score']),
-        performanceScore: Number(analyzerResults['Performance Score']),
-        bestPracticesScore: Number(analyzerResults['Best Practices Score']),
-        altTagsCount: Number(analyzerResults['Alt tags count']),
-        filledAltTagsCount: Number(analyzerResults['Filled alt tags count']),
+        accessibilityScore: this.convertToNumber(analyzerResults['Accessibility Score']),
+        performanceScore: this.convertToNumber(analyzerResults['Performance Score']),
+        bestPracticesScore: this.convertToNumber(analyzerResults['Best Practices Score']),
+        altTagsCount: this.convertToNumber(analyzerResults['Alt tags count']),
+        filledAltTagsCount: this.convertToNumber(analyzerResults['Filled alt tags count']),
         firstContentfulPaint: analyzerResults['First Contentful Paint'],
         speedIndex: analyzerResults['Speed Index'],
         timeToInteractive: analyzerResults['Time To Interactive'],
@@ -42,6 +42,11 @@ export class ReportService {
     )
 
     return { ...entity, details: { ...entity.details, id: undefined } }
+  }
+
+  private convertToNumber(analyzerResultsProperty: any): null | number {
+    const convertedProperty: number = analyzerResultsProperty
+    return Number.isNaN(convertedProperty) ? null : convertedProperty
   }
 
   async fetchLatestReport(request): Promise<ReportDto> {
