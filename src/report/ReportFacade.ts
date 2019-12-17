@@ -7,6 +7,7 @@ import { uniqueId } from 'lodash'
 import { ReportGenerateReportProcessor } from './ReportGenerateReportProcessor'
 import { FastifyReply } from 'fastify'
 import { Http2ServerResponse } from 'http2'
+import { Queues } from 'infrastructure/constants/Queues'
 
 @Injectable()
 export class ReportFacade {
@@ -24,7 +25,7 @@ export class ReportFacade {
   }
 
   generateReport(dto: ReportCreateDto, response: FastifyReply<Http2ServerResponse>) {
-    const queue = ReportQueueFactory.getQueue('generateReports', async (job, done) =>
+    const queue = ReportQueueFactory.getQueue(Queues.GENERATE_REPORTS, async (job, done) =>
       this.generateReportProcessor.process(done, job),
     )
     const jobId = uniqueId()
@@ -37,7 +38,7 @@ export class ReportFacade {
   }
 
   async fetchReportStatus(request, id: number) {
-    const queue = ReportQueueFactory.getQueue('generateReports')
+    const queue = ReportQueueFactory.getQueue(Queues.GENERATE_REPORTS)
     const job = await queue.getJob(id)
 
     return job
