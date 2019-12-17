@@ -4,7 +4,9 @@ import { CoreModule } from './CoreModule'
 import { HttpExceptionFilter } from 'infrastructure/filter/HttpExceptionFilter'
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestFastifyApplication>(CoreModule, new FastifyAdapter())
+  const app = await NestFactory.create<NestFastifyApplication>(CoreModule, new FastifyAdapter(), {
+    logger: ['debug', 'warn', 'verbose', 'error', 'log'],
+  })
 
   app.register(require('fastify-cookie'))
   app.useGlobalFilters(new HttpExceptionFilter())

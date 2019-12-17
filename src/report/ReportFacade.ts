@@ -1,21 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { AnalyzerFacade } from 'analyzer/AnalyzerFacade'
 import { ReportCreateDto } from './dto/ReportCreateDto'
 import { IPaginationOptions } from 'nestjs-typeorm-paginate'
 import { ReportService } from './ReportService'
-import { IssueFacade } from 'issue/IssueFacade'
-import { AnalyzerType } from 'analyzer/AnalyzerType'
-import { AltTagsFormatterType } from 'analyzer/alt_tags/AltTagsFormatterType'
-import { UserFacade } from 'user/UserFacade'
-import { findIndex } from 'lodash'
+import { ReportQueueFactory } from './ReportQueueFactory'
+import { uniqueId } from 'lodash'
+import { ReportGenerateReportProcessor } from './ReportGenerateReportProcessor'
 
 @Injectable()
 export class ReportFacade {
   constructor(
-    private readonly analyzerFacade: AnalyzerFacade,
     private readonly service: ReportService,
-    private readonly issueFacade: IssueFacade,
-    private readonly userFacade: UserFacade,
+    private readonly generateReportProcessor: ReportGenerateReportProcessor,
   ) {}
 
   fetchReports(request, options: IPaginationOptions) {
@@ -26,46 +21,19 @@ export class ReportFacade {
     return this.service.fetchReport(id)
   }
 
-  async generateReport(request, dto: ReportCreateDto) {
-    const altTagsIndex = findIndex(dto.options, _ => _ === AnalyzerType.ALT_TAGS)
-    let reportResults = {}
+  generateReport(dto: ReportCreateDto) {
+    const queue = ReportQueueFactory.getQueue('generateReports', async (job, done) =>
+      this.generateReportProcessor.process(done, job),
+    )
 
-    if (altTagsIndex !== -1) {
-      const altTagsAnalyzerResults = await this.analyzerFacade.getResults(
-        AnalyzerType.ALT_TAGS,
-        AltTagsFormatterType.DEFAULT,
-      )
+    queue.add({ dto }, { jobId: uniqueId(), removeOnComplete: true, removeOnFail: true })
+  }
 
-      const overallFormatAltTags = await this.analyzerFacade.getResults(
-        AnalyzerType.ALT_TAGS,
-        AltTagsFormatterType.OVERALL,
-        altTagsAnalyzerResults,
-      )
+  async fetchReportStatus(id) {
+    const queue = ReportQueueFactory.getQueue('generateReports')
+    const job = await queue.getJob(id)
 
-      reportResults = { ...reportResults, ...overallFormatAltTags }
-
-      const unityFormatAltTags = await this.analyzerFacade.getResults(
-        AnalyzerType.ALT_TAGS,
-        AltTagsFormatterType.UNITY,
-        altTagsAnalyzerResults,
-      )
-
-      await this.issueFacade.generateIssues(request, unityFormatAltTags)
-    }
-
-    // tslint:disable-next-line: forin
-    for (const optionIndex in dto.options) {
-      const option = dto.options[optionIndex]
-      if (option === AnalyzerType.ALT_TAGS) continue
-
-      const type: AnalyzerType = AnalyzerType[option] as AnalyzerType
-      const analyzerResults = await this.analyzerFacade.getResults(type, 'DEFAULT')
-
-      reportResults = { ...reportResults, ...analyzerResults }
-    }
-
-    await this.userFacade.completeOnboarding(request)
-    return this.service.generateReport(request, reportResults)
+    return job
   }
 
   fetchLatestReport(request) {

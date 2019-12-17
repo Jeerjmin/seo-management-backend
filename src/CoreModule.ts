@@ -1,6 +1,6 @@
 import { APP_INTERCEPTOR } from '@nestjs/core'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Module, ClassSerializerInterceptor } from '@nestjs/common'
+import { Module, ClassSerializerInterceptor, MiddlewareConsumer, RequestMethod } from '@nestjs/common'
 import * as ormconfig from './ormconfig'
 import { ConfigModule } from 'config/ConfigModule'
 import { AuthModule } from 'auth/AuthModule'
@@ -10,6 +10,8 @@ import { HttpModule } from 'http/HttpModule'
 import { StatsModule } from 'stats/StatsModule'
 import { ReportModule } from 'report/ReportModule'
 import { IssueModule } from 'issue/IssueModule'
+
+import { UI } from 'bull-board'
 
 @Module({
   providers: [
@@ -30,4 +32,11 @@ import { IssueModule } from 'issue/IssueModule'
     TypeOrmModule.forRoot(ormconfig),
   ],
 })
-export class CoreModule {}
+export class CoreModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(UI).forRoutes({
+      path: '*',
+      method: RequestMethod.GET,
+    })
+  }
+}
