@@ -29,17 +29,16 @@ export abstract class AbstractQueueFactory {
     AbstractQueueFactory.PROCESSORS.set(queueName, defaultProcessorFunction)
     queue.process(async (job, done) => AbstractQueueFactory.PROCESSORS.get(queueName)(job, done))
 
-    AbstractQueueFactory.setUpListeners(queue)
+    if (process.env.NODE_ENV === 'development') {
+      AbstractQueueFactory.setUpListeners(queue)
+    }
+
     AbstractQueueFactory.QUEUES.set(queueName, queue)
   }
 
   private static setUpListeners(queue: Queue.Queue) {
     queue.on('active', (job, _) => {
       AbstractQueueFactory.LOGGER.log(`Job ${job.id} has started`)
-    })
-
-    queue.on('progress', (job, progress) => {
-      AbstractQueueFactory.LOGGER.log(`Job ${job.id} is ${progress * 100}% ready!`)
     })
 
     queue.on('failed', (job, _) => {
