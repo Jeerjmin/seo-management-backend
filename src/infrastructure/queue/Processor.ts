@@ -1,3 +1,3 @@
 export interface Processor<T> {
-  process(done, ...data: any): T
+  process(done, job): T
 }

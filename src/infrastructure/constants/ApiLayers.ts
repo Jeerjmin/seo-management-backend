@@ -8,4 +8,5 @@ export class ApiLayers {
   static readonly STATS: string = `${ApiLayers.ROOT}stats/`
   static readonly REPORT: string = `${ApiLayers.ROOT}reports/`
   static readonly ISSUES: string = `${ApiLayers.ROOT}issues/`
+  static readonly BROKEN_LINKS: string = `${ApiLayers.ROOT}broken-links/`
 }
