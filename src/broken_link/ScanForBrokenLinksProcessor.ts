@@ -19,9 +19,12 @@ export class ScanForBrokenLinksProcessor implements Processor<Promise<any>> {
     const scanType: BrokenLinkScanType = BrokenLinkScanType[job.data.dto.scanType] as BrokenLinkScanType
 
     job.progress(0.5)
-    const results = await this.analyzerFacade.getResults(AnalyzerType.BROKEN_LINKS, BrokenLinksFormatterType.DEFAULT, [
-      { scanType },
-    ])
+    const results = await this.analyzerFacade.getResults(
+      AnalyzerType.BROKEN_LINKS,
+      BrokenLinksFormatterType.DEFAULT,
+      undefined,
+      [{ scanType }],
+    )
     job.progress(1)
 
     return done(null, await this.service.save(this.request, results))

@@ -11,6 +11,6 @@ export class AnalyzerController {
 
   @Get()
   fetchEndpoint(@Query() params: AnalyzerParams) {
-    return this.facade.getResults(params.type, params.format, [], undefined, params.fields)
+    return this.facade.getResults(params.type, params.format, undefined, [], params.fields)
   }
 }

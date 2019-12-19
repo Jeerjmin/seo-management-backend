@@ -8,10 +8,10 @@ export class AnalyzerFacade {
   getResults(
     analyzerType: string,
     formatterType: string | number,
-    additionalDependencies: any[] = [],
     data?: any,
+    additionalDependencies: any[] = [],
     ...attrs: string[]
   ): any {
-    return this.service.getResults(analyzerType, formatterType, additionalDependencies, data, ...attrs)
+    return this.service.getResults(analyzerType, formatterType, data, additionalDependencies, ...attrs)
   }
 }

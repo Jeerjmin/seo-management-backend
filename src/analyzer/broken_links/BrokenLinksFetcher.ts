@@ -9,7 +9,8 @@ export class BrokenLinksFetcher implements AnalyzerFetcher {
   async getFetchedData(dependencies) {
     const httpService: HttpService = dependencies[0]
     const shopPrefix = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(httpService.getRequest(), 'pfx'))
-    const scanType: BrokenLinkScanType = dependencies[2].scanType
+
+    const { scanType } = dependencies[2]
 
     const results = {
       overallLinksCount: 0,

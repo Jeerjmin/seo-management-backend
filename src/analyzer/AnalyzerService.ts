@@ -16,8 +16,8 @@ export class AnalyzerService {
   async getResults(
     analyzerType: string,
     formatterType: string | number = 'DEFAULT',
-    additionalDependencies: any[],
     data?: any,
+    additionalDependencies: any[] = [],
     ...attrs: string[]
   ) {
     const type: AnalyzerType = AnalyzerType[analyzerType] as AnalyzerType
