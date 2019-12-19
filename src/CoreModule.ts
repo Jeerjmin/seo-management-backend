@@ -1,6 +1,7 @@
 import { APP_INTERCEPTOR } from '@nestjs/core'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Module, ClassSerializerInterceptor, MiddlewareConsumer, RequestMethod } from '@nestjs/common'
+import { UI } from 'bull-board'
 import * as ormconfig from './ormconfig'
 import { ConfigModule } from 'config/ConfigModule'
 import { AuthModule } from 'auth/AuthModule'
@@ -10,8 +11,7 @@ import { HttpModule } from 'http/HttpModule'
 import { StatsModule } from 'stats/StatsModule'
 import { ReportModule } from 'report/ReportModule'
 import { IssueModule } from 'issue/IssueModule'
-
-import { UI } from 'bull-board'
+import { BrokenLinkModule } from 'broken_link/BrokenLinkModule'
 
 @Module({
   providers: [
@@ -29,6 +29,7 @@ import { UI } from 'bull-board'
     StatsModule,
     ReportModule,
     IssueModule,
+    BrokenLinkModule,
     TypeOrmModule.forRoot(ormconfig),
   ],
 })

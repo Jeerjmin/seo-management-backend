@@ -1,24 +1,31 @@
-import { Injectable, HttpStatus } from '@nestjs/common'
+import { Injectable, HttpStatus, BadRequestException } from '@nestjs/common'
 import { ScanForBrokenLinksProcessor } from './ScanForBrokenLinksProcessor'
 import { BrokenLinkQueueFactory } from './BrokenLinkQueueFactory'
 import { Queues } from 'infrastructure/constants/Queues'
 import { uniqueId } from 'lodash'
 import { BrokenLinkService } from './BrokenLinkService'
+import { ScanForBrokenLinksDto } from './dto/ScanForBrokenLinksDto'
+import { BrokenLinkScanTypeValidator } from './BrokenLinkScanTypeValidator'
 
 @Injectable()
 export class BrokenLinkFacade {
   constructor(
     private readonly scanForBrokenLinksProcessor: ScanForBrokenLinksProcessor,
     private readonly service: BrokenLinkService,
+    private readonly scanTypeValidator: BrokenLinkScanTypeValidator,
   ) {}
 
-  async scanForBrokenLinks(response) {
+  async scanForBrokenLinks(response, dto: ScanForBrokenLinksDto) {
+    if (!this.scanTypeValidator.isValid(dto.scanType)) {
+      throw new BadRequestException()
+    }
+
     const queue = BrokenLinkQueueFactory.getQueue(Queues.SEARCH_BROKEN_LINKS, async (job, done) =>
       this.scanForBrokenLinksProcessor.process(done, job),
     )
     const jobId = uniqueId()
 
-    queue.add({}, { jobId, removeOnComplete: true, removeOnFail: true })
+    queue.add({ dto }, { jobId, removeOnComplete: true, removeOnFail: true })
     response
       .header('Location', `/broken-links/queue/${jobId}`)
       .status(HttpStatus.ACCEPTED)

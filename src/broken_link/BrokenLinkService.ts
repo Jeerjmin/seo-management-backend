@@ -3,27 +3,27 @@ import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 import { BrokenLinkEntity } from './BrokenLinkEntity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { RepositoryHelper } from 'infrastructure/helper/RepositoryHelper'
 import { BrokenLinkDto } from './dto/BrokenLinkDto'
 
 @Injectable()
 export class BrokenLinkService {
   constructor(@InjectRepository(BrokenLinkEntity) private readonly repository: Repository<BrokenLinkEntity>) {}
 
-  async fetchLatest(request): Promise<BrokenLinkEntity> {
+  async fetchLatest(request): Promise<BrokenLinkEntity | {}> {
     const userId: number = CookieHelper.userIdCookie(request)
-
-    return RepositoryHelper.findOneOrThrow(this.repository, {
+    const entity: any = await this.repository.findOne({
       where: { ownerId: userId },
       order: { createdAt: 'DESC' },
     })
+
+    return entity ? { ...entity, items: entity.brokenLinks } : { items: [] }
   }
 
   async save(request, data: BrokenLinkDto) {
     const userId: number = CookieHelper.userIdCookie(request)
 
     this.removeIfPresent(userId)
-    this.repository.save(data)
+    this.repository.save({ ...data, ownerId: userId })
   }
 
   private async removeIfPresent(userId: number): Promise<void> {

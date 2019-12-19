@@ -2,21 +2,28 @@ import { AnalyzerFetcher } from 'analyzer/AnalyzerFetcher'
 import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
 import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 import { HttpService } from 'http/HttpService'
-import { SiteChecker } from 'broken-link-checker'
+import { UrlChecker, HtmlUrlChecker } from 'broken-link-checker'
+import { BrokenLinkScanType } from './BrokenLinkScanType'
 
 export class BrokenLinksFetcher implements AnalyzerFetcher {
   async getFetchedData(dependencies) {
     const httpService: HttpService = dependencies[0]
     const shopPrefix = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(httpService.getRequest(), 'pfx'))
+    const scanType: BrokenLinkScanType = dependencies[2].scanType
 
-    let results = {
+    const results = {
       overallLinksCount: 0,
       pagesCount: 0,
       brokenLinks: [],
     }
 
-    const siteCheckerPromise = new Promise((resolve, reject) => {
-      new SiteChecker(
+    const SCANNER_TYPE = {
+      [BrokenLinkScanType.WIDE]: HtmlUrlChecker,
+      [BrokenLinkScanType.HOME_PAGE]: UrlChecker,
+    }
+
+    const siteCheckerPromise = new Promise((resolve, _) => {
+      new SCANNER_TYPE[scanType](
         { honorRobotExclusions: false, userAgent: 'SeoInsights.io BLC' },
         {
           junk: () => {
@@ -30,7 +37,7 @@ export class BrokenLinksFetcher implements AnalyzerFetcher {
             results.overallLinksCount++
           },
           error: err => {
-            reject(err)
+            resolve({ items: [] })
           },
           page: () => {
             results.pagesCount++

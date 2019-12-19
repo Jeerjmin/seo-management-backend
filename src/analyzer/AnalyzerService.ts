@@ -7,15 +7,25 @@ import { ConfigService } from 'config/ConfigService'
 
 @Injectable()
 export class AnalyzerService {
-  constructor(private readonly registry: AnalyzerRegistry, private readonly httpService: HttpService, private readonly configService: ConfigService) {}
+  constructor(
+    private readonly registry: AnalyzerRegistry,
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
 
-  async getResults(analyzerType: string, formatterType: string | number = 'DEFAULT', data?: any, ...attrs: string[]) {
+  async getResults(
+    analyzerType: string,
+    formatterType: string | number = 'DEFAULT',
+    additionalDependencies: any[],
+    data?: any,
+    ...attrs: string[]
+  ) {
     const type: AnalyzerType = AnalyzerType[analyzerType] as AnalyzerType
     const isTypeValid = type !== undefined && isNaN(+analyzerType)
 
     if (isTypeValid) {
       const analyzer = this.registry.getAnalyzer(type)
-      const dependencies = [this.httpService, this.configService]
+      const dependencies = [this.httpService, this.configService, ...additionalDependencies]
 
       if (attrs.length > 0) {
         return analyzer.getResults(formatterType, data, dependencies, ...attrs)
