@@ -10,7 +10,7 @@ export class AnalyzerController {
   constructor(private readonly facade: AnalyzerFacade) {}
 
   @Get()
-  fetchEndpoint(@Query() params: AnalyzerParams) {
+  async fetchEndpoint(@Query() params: AnalyzerParams) {
     return this.facade.getResults(params.type, params.format, undefined, [], params.fields)
   }
 }

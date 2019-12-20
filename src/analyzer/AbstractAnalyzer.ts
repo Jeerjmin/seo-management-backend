@@ -14,7 +14,7 @@ export abstract class AbstractAnalyzer implements Analyzer {
     const fetchedData = data ? data : await this.getFetcher().getFetchedData(dependencies)
     const computeResults = await formatter.format(fetchedData)
 
-    if (attrs.length === 0) {
+    if (attrs.length === 0 || attrs.includes(undefined)) {
       return computeResults
     }
 

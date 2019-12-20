@@ -8,6 +8,7 @@ import { findIndex } from 'lodash'
 import { ReportService } from './ReportService'
 import { UserFacade } from 'user/UserFacade'
 import { REQUEST } from '@nestjs/core'
+import { AppsFormatterType } from 'analyzer/apps/AppsFormatterType'
 
 @Injectable()
 export class ReportGenerateReportProcessor implements Processor<Promise<any>> {
@@ -74,6 +75,9 @@ export class ReportGenerateReportProcessor implements Processor<Promise<any>> {
 
     job.progress(0.9)
     await this.userFacade.completeOnboarding(this.request)
+
+    const { apps } = await this.analyzerFacade.getResults(AnalyzerType.APPS, AppsFormatterType.DEFAULT)
+    await this.userFacade.saveAppsList(this.request, apps)
 
     job.progress(1)
     return done(null, await this.reportService.generateReport(this.request, reportResults))

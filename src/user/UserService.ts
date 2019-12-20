@@ -58,6 +58,14 @@ export class UserService {
     await this.userRepository.save(entity)
   }
 
+  async saveAppsList(request, appsList: string[]) {
+    const idCookie: number = CookieHelper.userIdCookie(request)
+    const entity: UserDto = await await this.userRepository.findOne({ where: { id: idCookie } })
+
+    entity.appsList = appsList
+    await this.userRepository.save(entity)
+  }
+
   private getAndDecryptCookie(request, cookieName: string) {
     const rawCookie = CookieHelper.obtainCookie(request, cookieName)
     return ObfuscationHelper.decrypt(rawCookie)

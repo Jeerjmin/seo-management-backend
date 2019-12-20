@@ -22,4 +22,8 @@ export class UserFacade {
   completeOnboarding(request) {
     this.service.completeOnboarding(request)
   }
+
+  saveAppsList(request, appsList: string[]) {
+    this.service.saveAppsList(request, appsList)
+  }
 }

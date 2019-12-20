@@ -3,4 +3,5 @@ export enum AnalyzerType {
   PERFORMANCE = 'PERFORMANCE',
   BEST_PRACTICES = 'BEST_PRACTICES',
   BROKEN_LINKS = 'BROKEN_LINKS',
+  APPS = 'APPS',
 }

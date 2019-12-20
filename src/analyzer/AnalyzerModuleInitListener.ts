@@ -5,6 +5,7 @@ import { AltTagsAnalyzer } from './alt_tags/AltTagsAnalyzer'
 import { PerformanceAnalyzer } from './performance/PerformanceAnalyzer'
 import { BestPracticesAnalyzer } from './best_practices/BestPracticesAnalyzer'
 import { BrokenLinksAnalyzer } from './broken_links/BrokenLinksAnalyzer'
+import { AppsAnalyzer } from './apps/AppsAnalyzer'
 
 @Injectable()
 export class AnalyzerModuleInitListener implements OnModuleInit {
@@ -16,6 +17,7 @@ export class AnalyzerModuleInitListener implements OnModuleInit {
       { type: AnalyzerType.PERFORMANCE, instance: new PerformanceAnalyzer() },
       { type: AnalyzerType.BEST_PRACTICES, instance: new BestPracticesAnalyzer() },
       { type: AnalyzerType.BROKEN_LINKS, instance: new BrokenLinksAnalyzer() },
+      { type: AnalyzerType.APPS, instance: new AppsAnalyzer() },
     )
   }
 }

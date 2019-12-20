@@ -48,7 +48,9 @@
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3",
-    "typeorm": "^0.2.20"
+    "shift-parser": "^7.0.0",
+    "typeorm": "^0.2.20",
+    "url-parse": "^1.4.7"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.0.0",
