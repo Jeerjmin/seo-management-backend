@@ -21,14 +21,13 @@ export class BrokenLinkService {
 
   async save(request, data: BrokenLinkDto) {
     const userId: number = CookieHelper.userIdCookie(request)
-
     this.removeIfPresent(userId)
+
     this.repository.save({ ...data, ownerId: userId })
   }
 
   private async removeIfPresent(userId: number): Promise<void> {
     const entitiesCount = await this.repository.count({ where: { ownerId: userId } })
-
     if (entitiesCount >= 1) {
       this.repository.delete({ ownerId: userId })
     }

@@ -30,11 +30,11 @@ export class IssueService {
   handleFetchIssues(request, options: IPaginationOptions, type: string) {
     const userId = CookieHelper.userIdCookie(request)
     const queryBuilder = this.repository.createQueryBuilder('issue')
+
     queryBuilder
       .where('issue.ownerId = :userId', { userId })
       .andWhere('issue.type = :type', { type })
       .orderBy('issue.createdAt', 'DESC')
-
     return paginate<IssueEntity>(queryBuilder, options)
   }
 }

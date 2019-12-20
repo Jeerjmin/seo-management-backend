@@ -5,8 +5,8 @@ import * as cheerio from 'cheerio'
 export class AltTagsDefaultFormatter implements AnalyzerFormatter {
   format(data: any) {
     const { products, pages, articles, customCollections, smartCollections } = data
-
     let formattedProducts = []
+
     let formattedPages = []
     let formattedArticles = []
 

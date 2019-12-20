@@ -10,10 +10,9 @@ export abstract class AbstractAnalyzer implements Analyzer {
     ...attrs: Array<string>
   ): Promise<any> {
     const formatter = this.getFormatters()[formatterType]
-
     const fetchedData = data ? data : await this.getFetcher().getFetchedData(dependencies)
-    const computeResults = await formatter.format(fetchedData)
 
+    const computeResults = await formatter.format(fetchedData)
     if (attrs.length === 0 || attrs.includes(undefined)) {
       return computeResults
     }

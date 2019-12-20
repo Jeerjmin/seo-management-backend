@@ -8,4 +8,4 @@ export class ReportQueueFactory extends AbstractQueueFactory {
   }
 }
 
-ReportQueueFactory.initialize() // static init
+ReportQueueFactory.initialize()

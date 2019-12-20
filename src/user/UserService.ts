@@ -50,19 +50,18 @@ export class UserService {
   }
 
   async completeOnboarding(request) {
-    const idCookie: number = CookieHelper.userIdCookie(request)
-    const entity: UserDto = await this.userRepository.findOne({ where: { id: idCookie } })
-
-    entity.onboardingCompleted = true
-
-    await this.userRepository.save(entity)
+    this.updateEntity(request, 'onboardingCompleted', true)
   }
 
   async saveAppsList(request, appsList: string[]) {
-    const idCookie: number = CookieHelper.userIdCookie(request)
-    const entity: UserDto = await await this.userRepository.findOne({ where: { id: idCookie } })
+    this.updateEntity(request, 'appsList', appsList)
+  }
 
-    entity.appsList = appsList
+  private async updateEntity(request, field: string, value: any) {
+    const idCookie: number = CookieHelper.userIdCookie(request)
+    const entity: UserDto = await this.userRepository.findOne({ where: { id: idCookie } })
+
+    entity[field] = value
     await this.userRepository.save(entity)
   }
 

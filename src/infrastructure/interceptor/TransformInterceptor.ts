@@ -11,7 +11,7 @@ interface ClassType<T> {
 export class TransformInterceptor<T> implements NestInterceptor<Partial<T>, T> {
   constructor(private readonly classType: ClassType<T>) {}
 
-  intercept(context: ExecutionContext, next: CallHandler<Partial<T>>): Observable<T> | Promise<Observable<T>> {
+  intercept(_, next: CallHandler<Partial<T>>): Observable<T> | Promise<Observable<T>> {
     return next.handle().pipe(map(data => plainToClass(this.classType, data)))
   }
 }

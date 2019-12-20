@@ -19,13 +19,13 @@ export class BrokenLinkFacade {
     if (!this.scanTypeValidator.isValid(dto.scanType)) {
       throw new BadRequestException()
     }
-
     const queue = BrokenLinkQueueFactory.getQueue(Queues.SEARCH_BROKEN_LINKS, async (job, done) =>
       this.scanForBrokenLinksProcessor.process(done, job),
     )
-    const jobId = uniqueId()
 
+    const jobId = uniqueId()
     queue.add({ dto }, { jobId, removeOnComplete: true, removeOnFail: true })
+
     response
       .header('Location', `/broken-links/queue/${jobId}`)
       .status(HttpStatus.ACCEPTED)

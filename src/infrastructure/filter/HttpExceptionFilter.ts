@@ -5,29 +5,33 @@ import { ErrorDto } from 'error/ErrorDto'
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: any | HttpException, host: ArgumentsHost) {
     const response = host.switchToHttp().getResponse()
+    const isTypeError = exception.toString().includes('TypeError')
 
-    if (exception.toString().includes('TypeError')) {
+    const isFastifyError = exception.name.includes('FastifyError')
+    const isHttpException = typeof exception.getStatus !== 'function'
+
+    if (isTypeError) {
       console.error(exception)
       response.status(500).send(new ErrorDto(500, 'Internal Server Error'))
+
       return
     }
 
-    if (exception.name.includes('FastifyError')) {
+    if (isFastifyError) {
       const status = exception.statusCode
-      const message = this.formatErrorMessage(exception.message, exception.code)
+      response.status(status).send(new ErrorDto(status, this.formatErrorMessage(exception.message, exception.code)))
 
-      response.status(status).send(new ErrorDto(status, message))
       return
     }
 
-    if (typeof exception.getStatus !== 'function') {
+    if (isHttpException) {
       console.error(exception)
     }
 
     const status: number = exception.getStatus()
     let message: string = exception.getResponse()
-    let externalMessage: string
 
+    let externalMessage: string
     if (typeof message === 'object') {
       const { message: nativeMessage, externalMessage: nativeExternalMessage } = exception.getResponse()
 
@@ -38,7 +42,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     response.status(status).send(new ErrorDto(status, message, externalMessage))
   }
 
-  private formatErrorMessage(message: string, errorPrefix: string) {
+  private formatErrorMessage(message: string, errorPrefix: string): string {
     return message
       .replace(errorPrefix, '')
       .replace(':', '')

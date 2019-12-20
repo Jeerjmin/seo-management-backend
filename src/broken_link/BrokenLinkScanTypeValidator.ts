@@ -7,6 +7,7 @@ export class BrokenLinkScanTypeValidator implements Validator {
   isValid(...args): boolean {
     const [scanType] = args
     const parsedScanType: BrokenLinkScanType = BrokenLinkScanType[scanType] as BrokenLinkScanType
+
     return !!parsedScanType
   }
 }

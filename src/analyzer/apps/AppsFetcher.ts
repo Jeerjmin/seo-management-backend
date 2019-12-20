@@ -10,11 +10,11 @@ export class AppsFetcher implements AnalyzerFetcher {
   async getFetchedData(dependencies) {
     const httpService: HttpService = dependencies[0]
     const shopPrefix = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(httpService.getRequest(), 'pfx'))
+
     const response = await httpService.get(`https://${shopPrefix}/`)
-
     const $ = cheerio.load(response.data)
-    const appsListScript = $("script:contains('function asyncLoad()')").html()
 
+    const appsListScript = $("script:contains('function asyncLoad()')").html()
     if (!appsListScript) {
       return new Set()
     }
