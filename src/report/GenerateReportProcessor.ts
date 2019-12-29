@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common'
 import { Processor } from 'infrastructure/queue/Processor'
 import { AnalyzerType } from 'analyzer/AnalyzerType'
 import { AltTagsFormatterType } from 'analyzer/alt_tags/AltTagsFormatterType'
@@ -9,7 +8,6 @@ import { ReportService } from './ReportService'
 import { UserFacade } from 'user/UserFacade'
 import { AppsFormatterType } from 'analyzer/apps/AppsFormatterType'
 
-@Injectable()
 export class GenerateReportProcessor implements Processor<Promise<any>> {
   constructor(
     private readonly analyzerFacade: AnalyzerFacade,

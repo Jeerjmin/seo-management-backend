@@ -8,13 +8,13 @@ export class AltTagsFetcher implements AnalyzerFetcher {
     const { shopPrefix, session }: { shopPrefix: string; session: string } = dependencies
     const httpService: HttpService = HttpService.create(shopPrefix, session)
 
-
     const products = await httpService.get('/products.json')
     const pages = await httpService.get('/pages.json')
+
     const articles = await httpService.get('/articles.json')
     const customCollections = await httpService.get('/custom_collections.json')
-    const smartCollections = await httpService.get('/smart_collections.json')
 
+    const smartCollections = await httpService.get('/smart_collections.json')
     try {
       return {
         products: products.data.products,

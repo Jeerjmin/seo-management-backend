@@ -4,7 +4,6 @@ import { IPaginationOptions } from 'nestjs-typeorm-paginate'
 import { ReportService } from './ReportService'
 import { ReportQueueFactory } from './ReportQueueFactory'
 import { uniqueId } from 'lodash'
-import { GenerateReportProcessor } from './GenerateReportProcessor'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
 import { Queues } from 'infrastructure/constants/Queues'
@@ -13,10 +12,7 @@ import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
 
 @Injectable()
 export class ReportFacade {
-  constructor(
-    private readonly service: ReportService,
-    private readonly generateReportProcessor: GenerateReportProcessor,
-  ) {}
+  constructor(private readonly service: ReportService) {}
 
   fetchReports(request, options: IPaginationOptions) {
     return this.service.fetchReports(request, options)
@@ -27,9 +23,7 @@ export class ReportFacade {
   }
 
   generateReport(dto: ReportCreateDto, request: FastifyRequest, response: FastifyReply<Http2ServerResponse>) {
-    const queue = ReportQueueFactory.getQueue(Queues.GENERATE_REPORTS, async (job, done) =>
-      this.generateReportProcessor.process(done, job),
-    )
+    const queue = ReportQueueFactory.getQueue(Queues.GENERATE_REPORTS)
     const jobId = uniqueId()
 
     const session = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'ss'))
