@@ -19,10 +19,8 @@ export class BrokenLinkService {
     return entity ? { ...entity, items: entity.brokenLinks } : { items: [] }
   }
 
-  async save(request, data: BrokenLinkDto) {
-    const userId: number = CookieHelper.userIdCookie(request)
+  async save(userId: number, data: BrokenLinkDto) {
     this.removeIfPresent(userId)
-
     this.repository.save({ ...data, ownerId: userId })
   }
 

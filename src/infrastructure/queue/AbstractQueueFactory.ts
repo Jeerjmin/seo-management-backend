@@ -2,7 +2,6 @@ import * as Queue from 'bull'
 import { setQueues } from 'bull-board'
 import { Logger } from '@nestjs/common'
 import { upperFirst } from 'lodash'
-import { Processor } from './Processor'
 
 export abstract class AbstractQueueFactory {
   private static readonly QUEUES: Map<string, Queue.Queue> = new Map<string, Queue.Queue>()
@@ -30,7 +29,7 @@ export abstract class AbstractQueueFactory {
 
   static registerQueues(...queues: { name: string; queue: Queue.Queue; processor: any }[]) {
     queues.forEach(queue => {
-      const logger: Logger = new Logger(upperFirst(queue.name), true)
+      const logger: Logger = new Logger(`Queue:${upperFirst(queue.name)}`, true)
       setQueues([...AbstractQueueFactory.QUEUES.values(), queue.queue])
 
       const processor = async (job, done) => {

@@ -8,12 +8,11 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ReportService } from './ReportService'
 import { IssueModule } from 'issue/IssueModule'
 import { ReportParamsValidator } from './ReportParamsValidator'
-import { GenerateReportProcessor } from './GenerateReportProcessor'
 import { ModuleInitEventListener } from './ModuleInitEventListener'
 
 @Module({
   controllers: [ReportController],
-  providers: [ReportFacade, ReportService, ReportParamsValidator, GenerateReportProcessor, ModuleInitEventListener],
+  providers: [ReportFacade, ReportService, ReportParamsValidator, ModuleInitEventListener],
   imports: [AnalyzerModule, UserModule, IssueModule, TypeOrmModule.forFeature([ReportEntity])],
   exports: [ReportFacade],
 })

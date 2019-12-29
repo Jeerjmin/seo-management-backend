@@ -10,7 +10,6 @@ export class BrokenLinksFetcher implements AnalyzerFetcher {
       scanType,
     }: {
       shopPrefix: string
-      session: string
       scanType: BrokenLinkScanType
     } = dependencies
 
