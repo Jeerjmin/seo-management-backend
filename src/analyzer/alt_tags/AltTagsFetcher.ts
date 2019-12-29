@@ -1,10 +1,13 @@
 import { AnalyzerFetcher } from 'analyzer/AnalyzerFetcher'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import { ErrorDto } from 'error/ErrorDto'
+import { HttpService } from 'http/HttpService'
 
 export class AltTagsFetcher implements AnalyzerFetcher {
   async getFetchedData(dependencies): Promise<object> {
-    const httpService = dependencies[0]
+    const { shopPrefix, session }: { shopPrefix: string; session: string } = dependencies
+    const httpService: HttpService = HttpService.create(shopPrefix, session)
+
 
     const products = await httpService.get('/products.json')
     const pages = await httpService.get('/pages.json')

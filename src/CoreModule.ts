@@ -7,7 +7,6 @@ import { ConfigModule } from 'config/ConfigModule'
 import { AuthModule } from 'auth/AuthModule'
 import { UserModule } from 'user/UserModule'
 import { AnalyzerModule } from 'analyzer/AnalyzerModule'
-import { HttpModule } from 'http/HttpModule'
 import { StatsModule } from 'stats/StatsModule'
 import { ReportModule } from 'report/ReportModule'
 import { IssueModule } from 'issue/IssueModule'
@@ -25,7 +24,6 @@ import { BrokenLinkModule } from 'broken_link/BrokenLinkModule'
     AuthModule,
     UserModule,
     AnalyzerModule,
-    HttpModule,
     StatsModule,
     ReportModule,
     IssueModule,

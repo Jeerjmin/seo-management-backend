@@ -10,8 +10,7 @@ import { IssueType } from './IssueType'
 export class IssueService {
   constructor(@InjectRepository(IssueEntity) private readonly repository: Repository<IssueEntity>) {}
 
-  async generateIssues(request, analyzerResults) {
-    const userId = CookieHelper.userIdCookie(request)
+  async generateIssues(userId: number, analyzerResults) {
     await this.repository.delete({ ownerId: userId })
 
     analyzerResults.forEach(element => {

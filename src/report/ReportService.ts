@@ -15,9 +15,7 @@ export class ReportService {
     private readonly paramsValidator: ReportParamsValidator,
   ) {}
 
-  async generateReport(request, analyzerResults) {
-    const userId = CookieHelper.userIdCookie(request)
-
+  async generateReport(userId: number, analyzerResults) {
     const entity = await this.repository.save(
       new ReportEntity(userId, {
         accessibilityScore: this.convertToNumber(analyzerResults['Accessibility Score']),

@@ -6,8 +6,8 @@ import { IPaginationOptions } from 'nestjs-typeorm-paginate'
 export class IssueFacade {
   constructor(private readonly service: IssueService) {}
 
-  generateIssues(request, analyzerResults) {
-    return this.service.generateIssues(request, analyzerResults)
+  generateIssues(userId: number, analyzerResults) {
+    return this.service.generateIssues(userId, analyzerResults)
   }
 
   fetchIssues(request, options: IPaginationOptions, type: string) {

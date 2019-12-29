@@ -19,11 +19,11 @@ export class UserFacade {
     this.service.handleFetch(request, response)
   }
 
-  completeOnboarding(request) {
-    this.service.completeOnboarding(request)
+  completeOnboarding(userId: number) {
+    this.service.completeOnboarding(userId)
   }
 
-  saveAppsList(request, appsList: string[]) {
-    this.service.saveAppsList(request, appsList)
+  saveAppsList(userId: number, appsList: string[]) {
+    this.service.saveAppsList(userId, appsList)
   }
 }

@@ -2,22 +2,17 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { AnalyzerRegistry } from './AnalyzerRegistry'
 import { AnalyzerType } from './AnalyzerType'
 import { ErrorDto } from 'error/ErrorDto'
-import { HttpService } from 'http/HttpService'
 import { ConfigService } from 'config/ConfigService'
 
 @Injectable()
 export class AnalyzerService {
-  constructor(
-    private readonly registry: AnalyzerRegistry,
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly registry: AnalyzerRegistry, private readonly configService: ConfigService) {}
 
   async getResults(
     analyzerType: string,
     formatterType: string | number = 'DEFAULT',
     data?: any,
-    additionalDependencies: any[] = [],
+    additionalDependencies = {},
     ...attrs: string[]
   ) {
     const type: AnalyzerType = AnalyzerType[analyzerType] as AnalyzerType
@@ -25,7 +20,7 @@ export class AnalyzerService {
 
     if (isTypeValid) {
       const analyzer = this.registry.getAnalyzer(type)
-      const dependencies = [this.httpService, this.configService, ...additionalDependencies]
+      const dependencies = { configService: this.configService, ...additionalDependencies }
 
       if (attrs.length > 0) {
         return analyzer.getResults(formatterType, data, dependencies, ...attrs)

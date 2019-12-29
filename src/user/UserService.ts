@@ -49,19 +49,18 @@ export class UserService {
     response.status(200).send({ ...entity, accessToken: undefined })
   }
 
-  async completeOnboarding(request) {
-    this.updateEntity(request, 'onboardingCompleted', true)
+  async completeOnboarding(userId: number) {
+    this.updateEntity(userId, 'onboardingCompleted', true)
   }
 
-  async saveAppsList(request, appsList: string[]) {
-    this.updateEntity(request, 'appsList', appsList)
+  async saveAppsList(userId: number, appsList: string[]) {
+    this.updateEntity(userId, 'appsList', appsList)
   }
 
-  private async updateEntity(request, field: string, value: any) {
-    const idCookie: number = CookieHelper.userIdCookie(request)
-    const entity: UserDto = await this.userRepository.findOne({ where: { id: idCookie } })
-
+  private async updateEntity(userId: number, field: string, value: any) {
+    const entity: UserDto = await this.userRepository.findOne({ where: { id: userId } })
     entity[field] = value
+
     await this.userRepository.save(entity)
   }
 

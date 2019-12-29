@@ -5,7 +5,7 @@ import { ReportCreateDto } from './dto/ReportCreateDto'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
 import { ReportDto } from './dto/ReportDto'
 import { TransformInterceptor } from 'infrastructure/interceptor/TransformInterceptor'
-import { FastifyReply } from 'fastify'
+import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
 
 @UseGuards(ShopifyAuthGuard)
@@ -14,8 +14,12 @@ export class ReportController {
   constructor(private readonly facade: ReportFacade) {}
 
   @Post('generate-report')
-  generateReport(@Body() dto: ReportCreateDto, @Res() response: FastifyReply<Http2ServerResponse>) {
-    return this.facade.generateReport(dto, response)
+  generateReport(
+    @Body() dto: ReportCreateDto,
+    @Req() request: FastifyRequest,
+    @Res() response: FastifyReply<Http2ServerResponse>,
+  ) {
+    return this.facade.generateReport(dto, request, response)
   }
 
   @Get()

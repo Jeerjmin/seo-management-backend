@@ -1,20 +1,18 @@
-import { Injectable, Inject } from '@nestjs/common'
-import { CookieHelper } from 'infrastructure/helper/CookieHelper'
-import { REQUEST } from '@nestjs/core'
-import { FastifyRequest } from 'fastify'
-import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
 import { ShopifyConstants } from 'infrastructure/constants/ShopifyConstants'
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
-@Injectable()
 export class HttpService {
   private readonly axiosInstance: AxiosInstance
 
-  constructor(@Inject(REQUEST) private readonly fastifyRequest: FastifyRequest) {
+  private constructor(shopPrefix: string, session: string) {
     this.axiosInstance = Axios.create({
-      baseURL: `https://${this.decryptCookie('pfx') + ShopifyConstants.SHOPIFY_API_URL}`,
-      headers: { 'X-Shopify-Access-Token': this.decryptCookie('ss') },
+      baseURL: `https://${shopPrefix + ShopifyConstants.SHOPIFY_API_URL}`,
+      headers: { 'X-Shopify-Access-Token': session },
     })
+  }
+
+  static create(shopPrefix: string, session: string) {
+    return new HttpService(shopPrefix, session)
   }
 
   request(config: AxiosRequestConfig) {
@@ -43,14 +41,5 @@ export class HttpService {
 
   patch(url: string, data: any, config?: AxiosRequestConfig) {
     return this.axiosInstance.post(url, data, config)
-  }
-
-  getRequest() {
-    return this.fastifyRequest
-  }
-
-  private decryptCookie(cookieName: string) {
-    const rawCookie: string = CookieHelper.obtainCookie(this.fastifyRequest, cookieName)
-    return ObfuscationHelper.decrypt(rawCookie)
   }
 }

@@ -9,7 +9,7 @@ export class AnalyzerFacade {
     analyzerType: string,
     formatterType: string | number,
     data?: any,
-    additionalDependencies: any[] = [],
+    additionalDependencies = {},
     ...attrs: string[]
   ): any {
     return this.service.getResults(analyzerType, formatterType, data, additionalDependencies, ...attrs)

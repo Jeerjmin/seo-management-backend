@@ -4,16 +4,18 @@ import { IPaginationOptions } from 'nestjs-typeorm-paginate'
 import { ReportService } from './ReportService'
 import { ReportQueueFactory } from './ReportQueueFactory'
 import { uniqueId } from 'lodash'
-import { ReportGenerateReportProcessor } from './ReportGenerateReportProcessor'
-import { FastifyReply } from 'fastify'
+import { GenerateReportProcessor } from './GenerateReportProcessor'
+import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
 import { Queues } from 'infrastructure/constants/Queues'
+import { CookieHelper } from 'infrastructure/helper/CookieHelper'
+import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
 
 @Injectable()
 export class ReportFacade {
   constructor(
     private readonly service: ReportService,
-    private readonly generateReportProcessor: ReportGenerateReportProcessor,
+    private readonly generateReportProcessor: GenerateReportProcessor,
   ) {}
 
   fetchReports(request, options: IPaginationOptions) {
@@ -24,13 +26,18 @@ export class ReportFacade {
     return this.service.fetchReport(id)
   }
 
-  generateReport(dto: ReportCreateDto, response: FastifyReply<Http2ServerResponse>) {
+  generateReport(dto: ReportCreateDto, request: FastifyRequest, response: FastifyReply<Http2ServerResponse>) {
     const queue = ReportQueueFactory.getQueue(Queues.GENERATE_REPORTS, async (job, done) =>
       this.generateReportProcessor.process(done, job),
     )
     const jobId = uniqueId()
 
-    queue.add({ dto }, { jobId, removeOnComplete: true, removeOnFail: true })
+    const session = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'ss'))
+    const shopPrefix = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'pfx'))
+
+    const userId = CookieHelper.userIdCookie(request)
+    queue.add({ dto, session, shopPrefix, userId }, { jobId, removeOnComplete: true, removeOnFail: true })
+
     response
       .header('Location', `/reports/queue/${jobId}`)
       .status(HttpStatus.ACCEPTED)
