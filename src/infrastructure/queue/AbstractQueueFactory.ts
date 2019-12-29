@@ -48,6 +48,7 @@ export abstract class AbstractQueueFactory {
         AbstractQueueFactory.setUpListeners(logger, queue.queue)
       }
 
+      logger.log(`Queue ${queue.name} initialized`)
       AbstractQueueFactory.QUEUES.set(queue.name, queue.queue)
     })
   }
