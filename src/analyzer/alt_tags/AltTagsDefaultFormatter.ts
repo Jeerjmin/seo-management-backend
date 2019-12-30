@@ -23,7 +23,11 @@ export class AltTagsDefaultFormatter implements AnalyzerFormatter {
         altTagsCount += altTags.altTagsCount
         filledAltTagsCount += altTags.filledAltTagsCount
 
-        return pick(image, 'id', 'product_id', 'alt', 'src')
+        return {
+          title: product.title,
+          apiUrl: `/products/${image.product_id}/images/${image.id}.json`,
+          ...pick(image, 'id', 'product_id', 'title', 'alt', 'src'),
+        }
       })
 
       overallAltTagsCount += altTagsCount
@@ -48,6 +52,7 @@ export class AltTagsDefaultFormatter implements AnalyzerFormatter {
       formattedPages = [
         ...formattedPages,
         {
+          apiUrl: `/pages/${page.id}.json`,
           ...pick(page, 'id', 'title', 'body_html'),
           ...this.altTagsArray(altTags.altTagsCount, altTags.filledAltTagsCount),
         },
@@ -63,6 +68,7 @@ export class AltTagsDefaultFormatter implements AnalyzerFormatter {
       formattedArticles = [
         ...formattedArticles,
         {
+          apiUrl: `/blogs/${article.blog_id}/articles/${article.id}.json`,
           id: article.id,
           body_html: article.body_html,
           summary_html: article.summary_html,
@@ -74,7 +80,7 @@ export class AltTagsDefaultFormatter implements AnalyzerFormatter {
     })
 
     const formattedCustomCollection = this.formatCollection(customCollections)
-    const formattedSmartCollection = this.formatCollection(smartCollections)
+    const formattedSmartCollection = this.formatCollection(smartCollections, true)
 
     overallAltTagsCount += formattedCustomCollection.overallAltTagsCount
     overallAltTagsCount += formattedSmartCollection.overallAltTagsCount
@@ -122,7 +128,7 @@ export class AltTagsDefaultFormatter implements AnalyzerFormatter {
     return { altTagsCount: localAltTagsCount, filledAltTagsCount: localFilledAltTagsCount }
   }
 
-  private formatCollection(collections) {
+  private formatCollection(collections, smartCollection: boolean = false) {
     let formattedCollection = []
     let overallAltTagsCount = 0
     let overallFilledAltTagsCount = 0
@@ -136,6 +142,9 @@ export class AltTagsDefaultFormatter implements AnalyzerFormatter {
       formattedCollection = [
         ...formattedCollection,
         {
+          apiUrl: smartCollection
+            ? `/smart_collections/${collection.id}.json`
+            : `/custom_collections/${collection.id}.json`,
           id: collection.id,
           title: collection.title,
           body_html: collection.body_html,

@@ -1,11 +1,13 @@
-import { Controller, Post, Res, Req, Param, Get, Body } from '@nestjs/common'
+import { Controller, Post, Res, Req, Param, Get, Body, UseGuards } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { BrokenLinkFacade } from './BrokenLinkFacade'
 import { ScanForBrokenLinksDto } from './dto/ScanForBrokenLinksDto'
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { Http2ServerResponse } from 'http2'
+import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
 
 @Controller(ApiLayers.BROKEN_LINKS)
+@UseGuards(ShopifyAuthGuard)
 export class BrokenLinkController {
   constructor(private readonly facade: BrokenLinkFacade) {}
 

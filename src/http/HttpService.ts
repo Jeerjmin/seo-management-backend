@@ -36,10 +36,10 @@ export class HttpService {
   }
 
   put(url: string, data: any, config?: AxiosRequestConfig) {
-    return this.axiosInstance.post(url, data, config)
+    return this.axiosInstance.put(url, data, config)
   }
 
   patch(url: string, data: any, config?: AxiosRequestConfig) {
-    return this.axiosInstance.post(url, data, config)
+    return this.axiosInstance.patch(url, data, config)
   }
 }

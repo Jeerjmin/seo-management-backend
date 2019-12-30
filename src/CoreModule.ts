@@ -11,6 +11,7 @@ import { StatsModule } from 'stats/StatsModule'
 import { ReportModule } from 'report/ReportModule'
 import { IssueModule } from 'issue/IssueModule'
 import { BrokenLinkModule } from 'broken_link/BrokenLinkModule'
+import { FixerModule } from 'fixer/FixerModule'
 
 @Module({
   providers: [
@@ -28,6 +29,7 @@ import { BrokenLinkModule } from 'broken_link/BrokenLinkModule'
     ReportModule,
     IssueModule,
     BrokenLinkModule,
+    FixerModule,
     TypeOrmModule.forRoot(ormconfig),
   ],
 })
