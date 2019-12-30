@@ -2,6 +2,7 @@ import { AnalyzerFetcher } from 'analyzer/AnalyzerFetcher'
 import { HttpService } from 'http/HttpService'
 import { UrlChecker, HtmlUrlChecker } from 'broken-link-checker'
 import { BrokenLinkScanType } from './BrokenLinkScanType'
+import { BrokenLinkSourceFactory } from './BrokenLinkSourceFactory'
 
 export class BrokenLinksFetcher implements AnalyzerFetcher {
   async getFetchedData(dependencies) {
@@ -31,9 +32,13 @@ export class BrokenLinksFetcher implements AnalyzerFetcher {
           junk: () => {
             results.overallLinksCount++
           },
-          link: ({ broken: isBroken, http }) => {
-            if (isBroken && http.response.statusCode !== 308) {
-              results.brokenLinks.push(http.response.url)
+          link: ({ url, html, broken: isBroken }) => {
+            console.log(url)
+            if (isBroken) {
+              results.brokenLinks.push({
+                url: url.original,
+                source: BrokenLinkSourceFactory.getSource(html, shopPrefix),
+              })
             }
 
             results.overallLinksCount++

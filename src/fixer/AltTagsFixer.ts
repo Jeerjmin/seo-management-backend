@@ -18,10 +18,7 @@ export class AltTagsFixer implements Fixer {
     results.forEach(result => {
       httpService
         .put(result.apiUrl, { id: result.id, ...FixerPayloadFactory.getPayload(result, shopName) })
-        .catch(error => {
-          console.error(error.config.data)
-          console.error(error.response.data)
-        })
+        .catch(error => new Error(error))
     })
   }
 
