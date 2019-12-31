@@ -2,6 +2,7 @@ import { Controller, Get, Res, Req, UseGuards, Post } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { UserFacade } from './UserFacade'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
+import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 
 @Controller()
 export class UserController {
@@ -16,6 +17,7 @@ export class UserController {
   @UseGuards(ShopifyAuthGuard)
   @Post(ApiLayers.USERS + 'skip-onboarding')
   async skipOnboarding(@Req() request) {
-    await this.facade.completeOnboarding(request)
+    const userId: number = CookieHelper.userIdCookie(request)
+    await this.facade.completeOnboarding(userId)
   }
 }

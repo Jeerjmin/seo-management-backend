@@ -14,7 +14,9 @@ export class BrokenLinkService {
     const userId: number = CookieHelper.userIdCookie(request)
     const queryBuilder = this.repository.createQueryBuilder('brokenLink')
 
-    queryBuilder.where('brokenLink.ownerId = :userId', { userId }).orderBy('brokenLink.createdAt', 'DESC')
+    queryBuilder.where('brokenLink.ownerId = :userId', { userId })
+    queryBuilder.orderBy('brokenLink.createdAt', 'DESC')
+
     return paginate<BrokenLinkEntity>(queryBuilder, options)
   }
 

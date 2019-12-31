@@ -9,7 +9,11 @@ export class StatsFacade {
 
   async generateOverallStats(request): Promise<StatsDto> {
     const last = await this.reportFacade.fetchLatestReport(request)
-    const penult = (await this.reportFacade.fetchPenultReport(request, last.id)) || last
+    let penult = last
+
+    if (last) {
+      penult = (await this.reportFacade.fetchPenultReport(request, last.id)) || last
+    }
 
     const accessibility = this.service.formatStats('accessibilityScore', last, penult)
     const performance = this.service.formatStats('performanceScore', last, penult)
