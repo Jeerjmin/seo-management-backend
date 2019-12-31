@@ -1,4 +1,4 @@
-import { Controller, Post, Res, Req, Param, Get, Body, UseGuards } from '@nestjs/common'
+import { Controller, Post, Res, Req, Param, Get, Body, UseGuards, Query } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { BrokenLinkFacade } from './BrokenLinkFacade'
 import { ScanForBrokenLinksDto } from './dto/ScanForBrokenLinksDto'
@@ -26,7 +26,7 @@ export class BrokenLinkController {
   }
 
   @Get()
-  async fetchEndpoint(@Req() request) {
-    return this.facade.fetchLatest(request)
+  async fetchEndpoint(@Req() request, @Query('page') page: number = 1, @Query('limit') limit: number = 15) {
+    return this.facade.fetchLatest(request, { limit, page })
   }
 }

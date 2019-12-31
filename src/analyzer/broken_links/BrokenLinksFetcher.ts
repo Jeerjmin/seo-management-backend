@@ -32,12 +32,13 @@ export class BrokenLinksFetcher implements AnalyzerFetcher {
           junk: () => {
             results.overallLinksCount++
           },
-          link: ({ url, html, broken: isBroken }) => {
-            console.log(url)
+          link: ({ url, base, html, broken: isBroken }) => {
             if (isBroken) {
               results.brokenLinks.push({
                 url: url.original,
                 source: BrokenLinkSourceFactory.getSource(html, shopPrefix),
+                text: html.text,
+                origin: base.original,
               })
             }
 

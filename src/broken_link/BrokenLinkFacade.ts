@@ -9,6 +9,7 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
 import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
+import { IPaginationOptions } from 'nestjs-typeorm-paginate'
 
 @Injectable()
 export class BrokenLinkFacade {
@@ -39,8 +40,8 @@ export class BrokenLinkFacade {
       .send()
   }
 
-  async fetchLatest(request) {
-    return this.service.fetchLatest(request)
+  async fetchLatest(request, options: IPaginationOptions) {
+    return this.service.fetchLatest(request, options)
   }
 
   async fetchBrokenLinkQueueStatus(request, id: number) {
@@ -49,6 +50,6 @@ export class BrokenLinkFacade {
 
     return job
       ? { status: 'processing', progress: job.progress() }
-      : { ...(await this.service.fetchLatest(request)), progress: 1 }
+      : { ...(await this.service.fetchLatest(request, { limit: 1, page: 1 })), progress: 1 }
   }
 }

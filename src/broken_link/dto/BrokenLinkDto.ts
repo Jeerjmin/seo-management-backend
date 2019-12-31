@@ -1,6 +1,5 @@
 export class BrokenLinkDto {
   ownerId: number
-  overallLinksCount: number
-  pagesCount: number
-  brokenLinks: string[]
+  url: string
+  type: string
 }
