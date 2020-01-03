@@ -1,3 +1,4 @@
 export class FixIssuesDto {
-  template: string
+  overallTemplate: string
+  productTemplate: string
 }

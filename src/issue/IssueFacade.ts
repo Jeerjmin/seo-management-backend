@@ -22,7 +22,7 @@ export class IssueFacade {
     return this.service.handleFetchIssues(request, options, type)
   }
 
-  async fetchReportStatus(id: number) {
+  async fetchIssueStatus(id: number) {
     const queue = IssueQueueFactory.getQueue(Queues.FIX_ISSUES)
     const job = await queue.getJob(id)
 

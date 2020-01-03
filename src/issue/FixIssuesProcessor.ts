@@ -23,9 +23,14 @@ export class FixIssuesProcessor implements Processor<any> {
         userId,
         shopPrefix,
         session,
-        template: dto.template,
+        productTemplate: this.ensureNotEmpty(dto.productTemplate, '[product-title] - [shop-name]'),
+        overallTemplate: this.ensureNotEmpty(dto.overallTemplate, '[page-title] - [shop-name]'),
         jobCallback,
       }),
     )
+  }
+
+  private ensureNotEmpty(value: string, defaultTemplate: string): string {
+    return value.length === 0 ? defaultTemplate : value
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Query, Post, UseGuards, Body, Res } from '@nestjs/common'
+import { Controller, Get, Req, Query, Post, UseGuards, Body, Res, Param } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { IssueFacade } from './IssueFacade'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
@@ -17,6 +17,11 @@ export class IssueController {
     @Query('type') type: string = 'prodcuts',
   ) {
     return this.facade.fetchIssues(request, { limit, page }, type)
+  }
+
+  @Get('queue/:id')
+  async fetchQueueStatus(@Param('id') id: number) {
+    return this.facade.fetchIssueStatus(id)
   }
 
   @Post('fix')

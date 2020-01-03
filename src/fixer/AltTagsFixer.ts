@@ -14,18 +14,31 @@ export class AltTagsFixer implements Fixer {
       session,
       shopPrefix,
       jobCallback,
-      template,
-    }: { userId: number; session: string; shopPrefix: string; jobCallback: Function; template: string } = args
+      overallTemplate,
+      productTemplate,
+    }: {
+      userId: number
+      session: string
+      shopPrefix: string
+      jobCallback: Function
+      overallTemplate: string
+      productTemplate: string
+    } = args
     const httpService: HttpService = HttpService.create(shopPrefix, session)
     const shopName = shopPrefix.replace('.myshopify.com', '')
 
-    const replacedTemplate = template.replace('[shop-name]', shopName)
     const results = await this.getDataToFix(session, shopPrefix)
 
     results.forEach(result => {
       jobCallback()
       httpService
-        .put(result.apiUrl, { id: result.id, ...FixerPayloadFactory.getPayload(result, replacedTemplate) })
+        .put(result.apiUrl, {
+          id: result.id,
+          ...FixerPayloadFactory.getPayload(result, {
+            productTemplate: productTemplate.replace('[shop-name]', shopName),
+            overallTemplate: overallTemplate.replace('[shop-name]', shopName),
+          }),
+        })
         .catch(error => new Error(error))
     })
   }
