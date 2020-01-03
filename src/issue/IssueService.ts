@@ -36,4 +36,5 @@ export class IssueService {
       .orderBy('issue.createdAt', 'DESC')
     return paginate<IssueEntity>(queryBuilder, options)
   }
+
 }

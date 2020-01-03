@@ -9,15 +9,23 @@ export class AltTagsFixer implements Fixer {
   constructor(private readonly analyzerFacade: AnalyzerFacade) {}
 
   async fix(args: any): Promise<void> {
-    const { userId, session, shopPrefix }: { userId: number; session: string; shopPrefix: string } = args
+    const {
+      userId,
+      session,
+      shopPrefix,
+      jobCallback,
+      template,
+    }: { userId: number; session: string; shopPrefix: string; jobCallback: Function; template: string } = args
     const httpService: HttpService = HttpService.create(shopPrefix, session)
-
     const shopName = shopPrefix.replace('.myshopify.com', '')
+
+    const replacedTemplate = template.replace('[shop-name]', shopName)
     const results = await this.getDataToFix(session, shopPrefix)
 
     results.forEach(result => {
+      jobCallback()
       httpService
-        .put(result.apiUrl, { id: result.id, ...FixerPayloadFactory.getPayload(result, shopName) })
+        .put(result.apiUrl, { id: result.id, ...FixerPayloadFactory.getPayload(result, replacedTemplate) })
         .catch(error => new Error(error))
     })
   }

@@ -1,7 +1,8 @@
-import { Controller, Get, Req, Query, Post, UseGuards } from '@nestjs/common'
+import { Controller, Get, Req, Query, Post, UseGuards, Body, Res } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { IssueFacade } from './IssueFacade'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
+import { FixIssuesDto } from './dto/FixIssuesDto'
 
 @UseGuards(ShopifyAuthGuard)
 @Controller(ApiLayers.ISSUES)
@@ -16,5 +17,10 @@ export class IssueController {
     @Query('type') type: string = 'prodcuts',
   ) {
     return this.facade.fetchIssues(request, { limit, page }, type)
+  }
+
+  @Post('fix')
+  fixIssues(@Req() request, @Res() response, @Body() dto: FixIssuesDto) {
+    return this.facade.fixIssues(request, response, dto)
   }
 }

@@ -3,36 +3,38 @@ import * as cheerio from 'cheerio'
 export class FixerPayloadFactory {
   private constructor() {}
 
-  static getPayload(result: any, shopName: string) {
+  static getPayload(result: any, template) {
     switch (result.type) {
       case 'PRODUCT': {
-        return { product: { image: { src: result.src, alt: `${result.title} - ${shopName}` } } }
+        return { product: { image: { src: result.src, alt: template.replace('[product-title]', result.title) } } }
       }
       case 'PAGE': {
-        return { page: { body_html: this.replaceAltTags(result.body_html, `${result.title} - ${shopName}`) } }
+        return {
+          page: { body_html: this.replaceAltTags(result.body_html, this.replaceSiteName(result.title, template)) },
+        }
       }
       case 'ARTICLE': {
         return {
           article: {
-            body_html: this.replaceAltTags(result.body_html, `${result.title} - ${shopName}`),
-            summary_html: this.replaceAltTags(result.summary_html, `${result.title} - ${shopName}`),
-            image: { ...result.image, alt: `${result.title} - ${shopName}` },
+            body_html: this.replaceAltTags(result.body_html, this.replaceSiteName(result.title, template)),
+            summary_html: this.replaceAltTags(result.summary_html, this.replaceSiteName(result.title, template)),
+            image: { ...result.image, alt: this.replaceSiteName(result.title, template) },
           },
         }
       }
       case 'CUSTOM_COLLECTIONS': {
         return {
           custom_collection: {
-            body_html: this.replaceAltTags(result.body_html, `${result.title} - ${shopName}`),
-            image: { ...result.image, alt: `${result.title} - ${shopName}` },
+            body_html: this.replaceAltTags(result.body_html, this.replaceSiteName(result.title, template)),
+            image: { ...result.image, alt: this.replaceSiteName(result.title, template) },
           },
         }
       }
       case 'SMART_COLLECTIONS': {
         return {
           smart_collection: {
-            body_html: this.replaceAltTags(result.body_html, `${result.title} - ${shopName}`),
-            image: { ...result.image, alt: `${result.title} - ${shopName}` },
+            body_html: this.replaceAltTags(result.body_html, this.replaceSiteName(result.title, template)),
+            image: { ...result.image, alt: this.replaceSiteName(result.title, template) },
           },
         }
       }
@@ -40,6 +42,10 @@ export class FixerPayloadFactory {
         throw new Error(`Payload for type ${result.type} does not exist`)
       }
     }
+  }
+
+  private static replaceSiteName(siteName: string, template: string): string {
+    return template.replace('[page-title]', siteName)
   }
 
   private static replaceAltTags(htmlContent: string, text: string) {
