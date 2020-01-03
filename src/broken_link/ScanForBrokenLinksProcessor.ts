@@ -10,7 +10,7 @@ export class ScanForBrokenLinksProcessor implements Processor<Promise<any>> {
 
   async process(done, job): Promise<any> {
     const {
-      dto: { scanType: originalScanType },
+      dto: { scanType: originalScanType, specificPageUrl },
       userId,
       shopPrefix,
     } = job.data
@@ -21,7 +21,7 @@ export class ScanForBrokenLinksProcessor implements Processor<Promise<any>> {
       AnalyzerType.BROKEN_LINKS,
       BrokenLinksFormatterType.DEFAULT,
       undefined,
-      { scanType, shopPrefix },
+      { scanType, shopPrefix, specificPageUrl },
     )
 
     job.progress(1)

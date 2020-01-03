@@ -23,15 +23,15 @@ export class BrokenLinkFacade {
     response: FastifyReply<Http2ServerResponse>,
     dto: ScanForBrokenLinksDto,
   ) {
-    if (!this.scanTypeValidator.isValid(dto.scanType)) {
+    const shopPrefix = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'pfx'))
+    if (!this.scanTypeValidator.isValid({ dto, shopPrefix })) {
       throw new BadRequestException()
     }
-    const queue = BrokenLinkQueueFactory.getQueue(Queues.SEARCH_BROKEN_LINKS)
-    const jobId = uniqueId()
 
-    const shopPrefix = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'pfx'))
     const userId = CookieHelper.userIdCookie(request)
+    const queue = BrokenLinkQueueFactory.getQueue(Queues.SEARCH_BROKEN_LINKS)
 
+    const jobId = uniqueId()
     queue.add({ dto, userId, shopPrefix }, { jobId, removeOnComplete: true, removeOnFail: true })
 
     response

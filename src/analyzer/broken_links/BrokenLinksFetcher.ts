@@ -1,6 +1,5 @@
 import { AnalyzerFetcher } from 'analyzer/AnalyzerFetcher'
-import { HttpService } from 'http/HttpService'
-import { UrlChecker, HtmlUrlChecker } from 'broken-link-checker'
+import { HtmlUrlChecker } from 'broken-link-checker'
 import { BrokenLinkScanType } from './BrokenLinkScanType'
 import { BrokenLinkSourceFactory } from './BrokenLinkSourceFactory'
 
@@ -9,9 +8,11 @@ export class BrokenLinksFetcher implements AnalyzerFetcher {
     const {
       shopPrefix,
       scanType,
+      specificPageUrl,
     }: {
       shopPrefix: string
       scanType: BrokenLinkScanType
+      specificPageUrl: string
     } = dependencies
 
     const results = {
@@ -20,13 +21,8 @@ export class BrokenLinksFetcher implements AnalyzerFetcher {
       brokenLinks: [],
     }
 
-    const SCANNER_TYPE = {
-      [BrokenLinkScanType.WIDE]: HtmlUrlChecker,
-      [BrokenLinkScanType.HOME_PAGE]: UrlChecker,
-    }
-
     const siteCheckerPromise = new Promise((resolve, _) => {
-      new SCANNER_TYPE[scanType](
+      new HtmlUrlChecker(
         { honorRobotExclusions: false, userAgent: 'SeoInsights.io BLC' },
         {
           junk: () => {
@@ -54,7 +50,7 @@ export class BrokenLinksFetcher implements AnalyzerFetcher {
             resolve(results)
           },
         },
-      ).enqueue(`https://${shopPrefix}/`)
+      ).enqueue(scanType === BrokenLinkScanType.SPECIFIC_PAGE ? specificPageUrl : `https://${shopPrefix}/`)
     })
 
     return siteCheckerPromise
