@@ -13,10 +13,7 @@ export class FixIssuesProcessor implements Processor<any> {
       session,
       dto,
     }: { userId: number; shopPrefix: string; session: string; dto: FixIssuesDto } = job.data
-    const jobCallback = () => {
-      job.progress(job.progress() + 0.15)
-    }
-
+    job.progress(0.5)
     done(
       null,
       await this.fixerFacade.fix(FixerType.ALT_TAGS, {
@@ -25,7 +22,7 @@ export class FixIssuesProcessor implements Processor<any> {
         session,
         productTemplate: this.ensureNotEmpty(dto.productTemplate, '[product-title] - [shop-name]'),
         overallTemplate: this.ensureNotEmpty(dto.overallTemplate, '[page-title] - [shop-name]'),
-        jobCallback,
+        override: dto.override,
       }),
     )
   }

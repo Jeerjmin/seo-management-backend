@@ -14,14 +14,25 @@ export class FixerPayloadFactory {
       }
       case 'PAGE': {
         return {
-          page: { body_html: this.replaceAltTags(result.body_html, this.replaceSiteName(result.title, templates.overallTemplate)) },
+          page: {
+            body_html: this.replaceAltTags(
+              result.body_html,
+              this.replaceSiteName(result.title, templates.overallTemplate),
+            ),
+          },
         }
       }
       case 'ARTICLE': {
         return {
           article: {
-            body_html: this.replaceAltTags(result.body_html, this.replaceSiteName(result.title, templates.overallTemplate)),
-            summary_html: this.replaceAltTags(result.summary_html, this.replaceSiteName(result.title, templates.overallTemplate)),
+            body_html: this.replaceAltTags(
+              result.body_html,
+              this.replaceSiteName(result.title, templates.overallTemplate),
+            ),
+            summary_html: this.replaceAltTags(
+              result.summary_html,
+              this.replaceSiteName(result.title, templates.overallTemplate),
+            ),
             image: { ...result.image, alt: this.replaceSiteName(result.title, templates.overallTemplate) },
           },
         }
@@ -29,7 +40,10 @@ export class FixerPayloadFactory {
       case 'CUSTOM_COLLECTIONS': {
         return {
           custom_collection: {
-            body_html: this.replaceAltTags(result.body_html, this.replaceSiteName(result.title, templates.overallTemplate)),
+            body_html: this.replaceAltTags(
+              result.body_html,
+              this.replaceSiteName(result.title, templates.overallTemplate),
+            ),
             image: { ...result.image, alt: this.replaceSiteName(result.title, templates.overallTemplate) },
           },
         }
@@ -37,7 +51,10 @@ export class FixerPayloadFactory {
       case 'SMART_COLLECTIONS': {
         return {
           smart_collection: {
-            body_html: this.replaceAltTags(result.body_html, this.replaceSiteName(result.title, templates.overallTemplate)),
+            body_html: this.replaceAltTags(
+              result.body_html,
+              this.replaceSiteName(result.title, templates.overallTemplate),
+            ),
             image: { ...result.image, alt: this.replaceSiteName(result.title, templates.overallTemplate) },
           },
         }
@@ -53,6 +70,10 @@ export class FixerPayloadFactory {
   }
 
   private static replaceAltTags(htmlContent: string, text: string) {
+    if (!htmlContent) {
+      return
+    }
+
     const $ = cheerio.load(htmlContent, { xmlMode: true })
     $('img').removeAttr('alt')
 

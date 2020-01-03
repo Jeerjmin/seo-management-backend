@@ -10,27 +10,23 @@ export class AltTagsFixer implements Fixer {
 
   async fix(args: any): Promise<void> {
     const {
-      userId,
       session,
       shopPrefix,
-      jobCallback,
       overallTemplate,
       productTemplate,
+      override,
     }: {
-      userId: number
       session: string
       shopPrefix: string
-      jobCallback: Function
       overallTemplate: string
       productTemplate: string
+      override: boolean
     } = args
     const httpService: HttpService = HttpService.create(shopPrefix, session)
     const shopName = shopPrefix.replace('.myshopify.com', '')
 
-    const results = await this.getDataToFix(session, shopPrefix)
-
+    const results = await this.getDataToFix(session, shopPrefix, override)
     results.forEach(result => {
-      jobCallback()
       httpService
         .put(result.apiUrl, {
           id: result.id,
@@ -43,10 +39,15 @@ export class AltTagsFixer implements Fixer {
     })
   }
 
-  private async getDataToFix(session: string, shopPrefix: string) {
-    return this.analyzerFacade.getResults(AnalyzerType.ALT_TAGS, AltTagsFormatterType.UNITY, undefined, {
-      session,
-      shopPrefix,
-    })
+  private async getDataToFix(session: string, shopPrefix: string, override: boolean) {
+    return this.analyzerFacade.getResults(
+      AnalyzerType.ALT_TAGS,
+      override ? AltTagsFormatterType.OVERRIDE : AltTagsFormatterType.UNITY,
+      undefined,
+      {
+        session,
+        shopPrefix,
+      },
+    )
   }
 }
