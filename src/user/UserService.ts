@@ -46,7 +46,7 @@ export class UserService {
       response.status(401).send(new ErrorDto(401, 'Unauthorized'))
     }
 
-    response.status(200).send({ ...entity, accessToken: undefined })
+    response.status(200).send({ ...entity, accessToken: undefined, appsList: undefined })
   }
 
   async completeOnboarding(userId: number) {

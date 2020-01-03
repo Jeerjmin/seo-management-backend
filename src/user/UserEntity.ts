@@ -11,5 +11,5 @@ export class UserEntity {
   @Column() email: string
   @Column() @Exclude() accessToken: string
   @Column({ default: false }) onboardingCompleted: boolean
-  @Column('text', { array: true, nullable: true }) appsList: string[]
+  @Column('text', { array: true, nullable: true }) @Exclude() appsList: string[]
 }

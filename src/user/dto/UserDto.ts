@@ -6,5 +6,4 @@ export class UserDto {
   domain: string
   email: string
   onboardingCompleted: boolean
-  appsList: string[]
 }
