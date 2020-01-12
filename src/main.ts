@@ -16,7 +16,10 @@ async function bootstrap() {
     methods: ['GET', 'PUT', 'POST', 'OPTIONS', 'DELETE'],
     allowedHeaders: ['Cache-Control', 'Content-Type'],
     exposedHeaders: ['Location'],
-    origin: process.env.NODE_ENV === 'development' ? 'http://localhost' : 'https://seoinsights.io',
+    origin: [
+      'http://localhost',
+      process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'https://api.seoinsights.io',
+    ],
   })
 
   await app.listen(3000)

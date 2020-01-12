@@ -5,7 +5,7 @@ export class NonceHelper {
     let text = ''
     const possible = 'ABCDEFGHIJKLMOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'
 
-    for (let i = 0; i < bits; i += 1) {
+    for (let i = 0; i < bits; i++) {
       text += possible.charAt(Math.floor(Math.random() * bits))
     }
     return text
