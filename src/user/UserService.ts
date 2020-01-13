@@ -1,8 +1,5 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { Repository } from 'typeorm'
-import { CookieHelper } from 'infrastructure/helper/CookieHelper'
-import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
-import { ErrorDto } from 'error/ErrorDto'
 import { UserEntity } from './UserEntity'
 import { UserCreateDto } from './dto/UserCreateDto'
 import { UserDto } from './dto/UserDto'
@@ -13,59 +10,57 @@ export class UserService {
   constructor(@InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>) {}
 
   async fetchOrCreate(originalDomain: string, dto: UserCreateDto): Promise<UserDto> {
-    let entity = await this.userRepository.findOne({ where: { originalDomain } })
+    let entity: UserDto | UserEntity = await this.findOne(originalDomain)
 
     if (!entity) {
-      entity = await this.userRepository.save({ ...dto })
+      entity = await this.save({ ...dto })
     }
 
     return entity
   }
 
-  async fetchMe(request, response): Promise<UserDto> {
-    const prefixCookie = this.getAndDecryptCookie(request, 'pfx')
-    const sessionCookie = this.getAndDecryptCookie(request, 'ss')
-
-    const entity = await this.userRepository.findOne({
-      where: { originalDomain: prefixCookie, accessToken: sessionCookie },
-    })
-
-    if (!entity || !prefixCookie || !sessionCookie) {
+  async fetchMe(originalDomain: string, accessToken: string): Promise<UserDto> {
+    const entity = await this.userRepository.findOne({ where: { originalDomain, accessToken } })
+    if (!entity || !originalDomain || !accessToken) {
       return undefined
     }
 
-    CookieHelper.createCookie(response, 'id', entity.id.toString())
-
     return entity
   }
 
-  async handleFetch(request, response) {
-    const entity: UserDto = await this.fetchMe(request, response)
-
+  async handleFetch(originalDomain: string, accessToken: string) {
+    const entity: UserDto = await this.fetchMe(originalDomain, accessToken)
     if (!entity) {
-      response.status(401).send(new ErrorDto(401, 'Unauthorized'))
+      throw new UnauthorizedException()
     }
 
-    response.status(200).send({ ...entity, accessToken: undefined, appsList: undefined })
+    return { ...entity, accessToken: undefined, appsList: undefined }
   }
 
   async completeOnboarding(userId: number) {
-    this.updateEntity(userId, 'onboardingCompleted', true)
+    return this.updateEntity(userId, 'onboardingCompleted', true)
   }
 
   async saveAppsList(userId: number, appsList: string[]) {
-    this.updateEntity(userId, 'appsList', appsList)
+    return this.updateEntity(userId, 'appsList', appsList)
   }
 
-  private async updateEntity(userId: number, field: string, value: any) {
-    const entity: UserDto = await this.userRepository.findOne({ where: { id: userId } })
+  private async save(dto: UserCreateDto | UserDto): Promise<UserEntity> {
+    return this.userRepository.save({ ...dto })
+  }
+
+  private async findOne(originalDomain: string): Promise<UserDto> {
+    return this.userRepository.findOne({ where: { originalDomain } })
+  }
+
+  private async findOneById(userId: number) {
+    return this.userRepository.findOne({ where: { id: userId } })
+  }
+
+  private async updateEntity(userId: number, field: string, value: any): Promise<UserEntity> {
+    const entity: UserDto = await this.findOneById(userId)
     entity[field] = value
 
-    await this.userRepository.save(entity)
-  }
-
-  private getAndDecryptCookie(request, cookieName: string) {
-    const rawCookie = CookieHelper.obtainCookie(request, cookieName)
-    return ObfuscationHelper.decrypt(rawCookie)
+    return this.save(entity)
   }
 }

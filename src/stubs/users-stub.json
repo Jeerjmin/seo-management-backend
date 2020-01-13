@@ -1,0 +1,24 @@
+[
+  {
+    "id": 6,
+    "ownerName": "Bartłomiej Stefański",
+    "shopName": "bstefanski-test",
+    "originalDomain": "bstefanski-test.myshopify.com",
+    "domain": "bstefanski-test.myshopify.com",
+    "email": "contact@bstefanski.com",
+    "accessToken": "78e3e85add2033a82d8097efe07ed697",
+    "onboardingCompleted": true,
+    "appsList": []
+  },
+  {
+    "id": 7,
+    "ownerName": "Matt Sausage",
+    "shopName": "matt-test",
+    "originalDomain": "matt-test.myshopify.com",
+    "domain": "matt-test.myshopify.com",
+    "email": "contact@msausage.com",
+    "accessToken": "796de70efe7908d28a3302dda58e3e87",
+    "onboardingCompleted": true,
+    "appsList": []
+  }
+]

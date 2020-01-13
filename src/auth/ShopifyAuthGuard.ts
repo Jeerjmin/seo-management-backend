@@ -15,6 +15,8 @@ export class ShopifyAuthGuard implements CanActivate {
 
     if (user) {
       const idCookie = CookieHelper.userIdCookie(request)
+      CookieHelper.createCookie(response, 'id', user.id.toString())
+
       return idCookie === user.id
     }
 

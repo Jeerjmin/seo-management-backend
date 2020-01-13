@@ -11,19 +11,19 @@ export class UserFacade {
     return this.service.fetchOrCreate(originalDomain, dto)
   }
 
-  fetchMe(request, response): Promise<UserDto> {
-    return this.service.fetchMe(request, response)
+  fetchMe(originalDomain: string, accessToken: string): Promise<UserDto> {
+    return this.service.fetchMe(originalDomain, accessToken)
   }
 
-  handleFetch(request, response) {
-    this.service.handleFetch(request, response)
+  handleFetch(originalDomain: string, accessToken: string) {
+    return this.service.handleFetch(originalDomain, accessToken)
   }
 
   completeOnboarding(userId: number) {
-    this.service.completeOnboarding(userId)
+    return this.service.completeOnboarding(userId)
   }
 
   saveAppsList(userId: number, appsList: string[]) {
-    this.service.saveAppsList(userId, appsList)
+    return this.service.saveAppsList(userId, appsList)
   }
 }

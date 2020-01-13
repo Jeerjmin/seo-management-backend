@@ -1,0 +1,20 @@
+[
+  {
+    "id": 6,
+    "ownerName": "Bartłomiej Stefański",
+    "shopName": "bstefanski-test",
+    "originalDomain": "bstefanski-test.myshopify.com",
+    "domain": "bstefanski-test.myshopify.com",
+    "email": "contact@bstefanski.com",
+    "onboardingCompleted": true
+  },
+  {
+    "id": 7,
+    "ownerName": "Matt Sausage",
+    "shopName": "matt-test",
+    "originalDomain": "matt-test.myshopify.com",
+    "domain": "matt-test.myshopify.com",
+    "email": "contact@msausage.com",
+    "onboardingCompleted": true
+  }
+]

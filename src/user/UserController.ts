@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Req, UseGuards, Post } from '@nestjs/common'
+import { Controller, Get, Req, UseGuards, Post } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { UserFacade } from './UserFacade'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
@@ -10,8 +10,11 @@ export class UserController {
 
   @UseGuards(ShopifyAuthGuard)
   @Get(ApiLayers.SESSIONS + 'me')
-  async fetchEndpoint(@Req() request, @Res() response) {
-    await this.facade.handleFetch(request, response)
+  async fetchEndpoint(@Req() request) {
+    const originalDomain: string = CookieHelper.obtainCookie(request, 'pfx')
+    const accessToken: string = CookieHelper.obtainCookie(request, 'ss')
+
+    return this.facade.handleFetch(originalDomain, accessToken)
   }
 
   @UseGuards(ShopifyAuthGuard)
