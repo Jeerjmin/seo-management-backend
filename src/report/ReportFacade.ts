@@ -15,6 +15,7 @@ export class ReportFacade {
   constructor(private readonly service: ReportService) {}
 
   fetchReports(request, options: IPaginationOptions) {
+    // todo
     return this.service.fetchReports(request, options)
   }
 
@@ -39,6 +40,7 @@ export class ReportFacade {
   }
 
   async fetchReportStatus(request, id: number) {
+    // todo
     const queue = ReportQueueFactory.getQueue(Queues.GENERATE_REPORTS)
     const job = await queue.getJob(id)
 
@@ -48,10 +50,12 @@ export class ReportFacade {
   }
 
   fetchLatestReport(request) {
+    //todo
     return this.service.fetchLatestReport(request)
   }
 
   fetchPenultReport(request, id: number) {
+    //todo
     return this.service.fetchPenultReport(request, id)
   }
 }

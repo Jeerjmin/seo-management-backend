@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "ownerId": 3,
+    "createdAt": "2019-12-30T22:38:50.821159",
+    "details": {
+      "accessibilityScore": 100,
+      "performanceScore": 100,
+      "bestPracticesScore": 100,
+      "altTagsCount": 11,
+      "filledAltTagsCount": 11,
+      "firstContentfulPaint": "0.6 s",
+      "speedIndex": "0.8 s",
+      "timeToInteractive": "0.8 s",
+      "firstMeaningfulPaint": "0.7 s",
+      "firstCpuIdle": "0.8 s",
+      "estimatedInputLatency": "10 ms",
+      "consoleErrors": "3 errors found",
+      "vulnerableLibraries": "9 vulnerabilities detected",
+      "avoidsDeprecatedApis": false,
+      "allowsPastePassword": false,
+      "correctAspectRatio": false,
+      "avoidsCrossLinks": false,
+      "usesHttps": false
+    }
+  },
+  {
+    "id": 2,
+    "ownerId": 3,
+    "createdAt": "2019-12-30T22:38:50.821159",
+    "details": {
+      "accessibilityScore": 83,
+      "performanceScore": 23,
+      "bestPracticesScore": 69,
+      "altTagsCount": 11,
+      "filledAltTagsCount": 11,
+      "firstContentfulPaint": "0.6 s",
+      "speedIndex": "0.6 s",
+      "timeToInteractive": "1.0 s",
+      "firstMeaningfulPaint": "0.8 s",
+      "firstCpuIdle": "1.0 s",
+      "estimatedInputLatency": "10 ms",
+      "consoleErrors": "3 errors found",
+      "vulnerableLibraries": "9 vulnerabilities detected",
+      "avoidsDeprecatedApis": false,
+      "allowsPastePassword": false,
+      "correctAspectRatio": false,
+      "avoidsCrossLinks": false,
+      "usesHttps": false
+    }
+  },
+  {
+    "id": 3,
+    "ownerId": 3,
+    "createdAt": "2019-12-30T22:38:50.821159",
+    "details": {
+      "accessibilityScore": null,
+      "performanceScore": 70,
+      "bestPracticesScore": null,
+      "altTagsCount": 0,
+      "filledAltTagsCount": 0,
+      "firstContentfulPaint": "0.6 s",
+      "speedIndex": "0.7 s",
+      "timeToInteractive": "1.2 s",
+      "firstMeaningfulPaint": "0.8 s",
+      "firstCpuIdle": "1.1 s",
+      "estimatedInputLatency": "10 ms",
+      "consoleErrors": "N/A",
+      "vulnerableLibraries": "N/A",
+      "avoidsDeprecatedApis": false,
+      "allowsPastePassword": false,
+      "correctAspectRatio": false,
+      "avoidsCrossLinks": false,
+      "usesHttps": false
+    }
+  }
+]
