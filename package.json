@@ -74,6 +74,9 @@
     "typescript": "3.4.3"
   },
   "jest": {
+    "setupFiles": [
+      "./jest/jest-helpers.ts"
+    ],
     "moduleFileExtensions": [
       "js",
       "json",
