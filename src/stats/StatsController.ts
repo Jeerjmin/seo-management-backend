@@ -3,6 +3,7 @@ import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
 import { StatsFacade } from './StatsFacade'
 import { StatsDto } from './StatsDto'
+import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 
 @Controller(ApiLayers.STATS)
 export class StatsController {
@@ -11,6 +12,7 @@ export class StatsController {
   @UseGuards(ShopifyAuthGuard)
   @Get()
   async fetchStats(@Req() request): Promise<StatsDto> {
-    return this.facade.generateOverallStats(request)
+    const userId: number = CookieHelper.userIdCookie(request)
+    return this.facade.generateOverallStats(userId)
   }
 }

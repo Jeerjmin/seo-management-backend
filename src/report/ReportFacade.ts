@@ -26,10 +26,10 @@ export class ReportFacade {
     const queue = ReportQueueFactory.getQueue(Queues.GENERATE_REPORTS)
     const jobId = uniqueId()
 
-    const session = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'ss'))
-    const shopPrefix = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'pfx'))
+    const session: string = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'ss'))
+    const shopPrefix: string = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'pfx'))
 
-    const userId = CookieHelper.userIdCookie(request)
+    const userId: number = CookieHelper.userIdCookie(request)
     queue.add({ dto, session, shopPrefix, userId }, { jobId, removeOnComplete: true, removeOnFail: true })
 
     response

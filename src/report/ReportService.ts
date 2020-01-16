@@ -1,5 +1,4 @@
 import { Injectable, BadRequestException } from '@nestjs/common'
-import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 import { Repository, Not, FindManyOptions } from 'typeorm'
 import { ReportEntity } from './ReportEntity'
 import { InjectRepository } from '@nestjs/typeorm'

@@ -1,4 +1,4 @@
-declare interface ShopifyCallbackQuery {
+export interface ShopifyCallbackQuery {
   code: string
   hmac: string
   shop: string

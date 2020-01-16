@@ -13,12 +13,12 @@
     "sourceMap": true,
     "allowJs": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "*": ["./*"]
+      "*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"],
+  "exclude": ["node_modules", "dist/**", "**/*.spec.ts"],
   "files": ["./jest/jest-helpers.d.ts"]
 }

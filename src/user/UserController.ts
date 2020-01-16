@@ -3,6 +3,7 @@ import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { UserFacade } from './UserFacade'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
 import { CookieHelper } from 'infrastructure/helper/CookieHelper'
+import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
 
 @Controller()
 export class UserController {
@@ -11,8 +12,8 @@ export class UserController {
   @UseGuards(ShopifyAuthGuard)
   @Get(ApiLayers.SESSIONS + 'me')
   async fetchEndpoint(@Req() request) {
-    const originalDomain: string = CookieHelper.obtainCookie(request, 'pfx')
-    const accessToken: string = CookieHelper.obtainCookie(request, 'ss')
+    const originalDomain: string = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'pfx'))
+    const accessToken: string = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'ss'))
 
     return this.facade.handleFetch(originalDomain, accessToken)
   }

@@ -7,6 +7,7 @@ import { ReportDto } from './dto/ReportDto'
 import { TransformInterceptor } from 'infrastructure/interceptor/TransformInterceptor'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
+import { CookieHelper } from 'infrastructure/helper/CookieHelper'
 
 @UseGuards(ShopifyAuthGuard)
 @Controller(ApiLayers.REPORT)
@@ -24,12 +25,14 @@ export class ReportController {
 
   @Get()
   fetchAll(@Req() request, @Query('page') page: number = 1, @Query('limit') limit: number = 15) {
-    return this.facade.fetchReports(request, { limit, page })
+    const userId: number = CookieHelper.userIdCookie(request)
+    return this.facade.fetchReports(userId, { limit, page })
   }
 
   @Get('queue/:id')
   async fetchReportStatus(@Req() request, @Param('id') id: number) {
-    return this.facade.fetchReportStatus(request, id)
+    const userId: number = CookieHelper.userIdCookie(request)
+    return this.facade.fetchReportStatus(userId, id)
   }
 
   @Get(':id')

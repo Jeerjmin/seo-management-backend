@@ -1,3 +1,5 @@
+import { ShopifyCallbackQuery } from 'auth/types/ShopifyCallbackQuery'
+
 const crypto = require('crypto')
 const queryString = require('query-string')
 

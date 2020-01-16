@@ -15,6 +15,7 @@ import { ShopifyConstants } from 'infrastructure/constants/ShopifyConstants'
 import { UserFacade } from 'user/UserFacade'
 import { UserDto } from 'user/dto/UserDto'
 import { UserCreateDto } from 'user/dto/UserCreateDto'
+import { ShopifyCallbackQuery } from './types/ShopifyCallbackQuery'
 
 @Injectable()
 export class AuthService {
@@ -115,6 +116,6 @@ export class AuthService {
     const user: UserDto = await this.userFacade.fetchOrCreate(shopName, payload)
     CookieHelper.createCookie(response, 'id', user.id.toString())
 
-    return response.status(302).redirect('http://localhost:8080')
+    return response.status(302).redirect(this.configService.get('LANDING_URL'))
   }
 }

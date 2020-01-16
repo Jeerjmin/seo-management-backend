@@ -6,10 +6,11 @@ import { IssueService } from './IssueService'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { IssueEntity } from './IssueEntity'
 import { ModuleInitEventListener } from './ModuleInitEventListener'
+import { FixerModule } from 'fixer/FixerModule'
 
 @Module({
   controllers: [IssueController],
-  imports: [UserModule, TypeOrmModule.forFeature([IssueEntity])],
+  imports: [UserModule, FixerModule, TypeOrmModule.forFeature([IssueEntity])],
   providers: [IssueFacade, IssueService, ModuleInitEventListener],
   exports: [IssueFacade],
 })
