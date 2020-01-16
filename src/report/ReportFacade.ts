@@ -14,9 +14,8 @@ import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
 export class ReportFacade {
   constructor(private readonly service: ReportService) {}
 
-  fetchReports(request, options: IPaginationOptions) {
-    // todo
-    return this.service.fetchReports(request, options)
+  fetchReports(userId: number, options: IPaginationOptions) {
+    return this.service.fetchReports(userId, options)
   }
 
   fetchReport(id: number) {
@@ -39,23 +38,20 @@ export class ReportFacade {
       .send()
   }
 
-  async fetchReportStatus(request, id: number) {
-    // todo
+  async fetchReportStatus(userId: number, id: number) {
     const queue = ReportQueueFactory.getQueue(Queues.GENERATE_REPORTS)
     const job = await queue.getJob(id)
 
     return job
       ? { status: 'processing', progress: job.progress() }
-      : { ...(await this.fetchLatestReport(request)), progress: 1 }
+      : { ...(await this.fetchLatestReport(userId)), progress: 1 }
   }
 
-  fetchLatestReport(request) {
-    //todo
-    return this.service.fetchLatestReport(request)
+  fetchLatestReport(userId: number) {
+    return this.service.fetchLatestReport(userId)
   }
 
-  fetchPenultReport(request, id: number) {
-    //todo
-    return this.service.fetchPenultReport(request, id)
+  fetchPenultReport(userId: number, id: number) {
+    return this.service.fetchPenultReport(userId, id)
   }
 }

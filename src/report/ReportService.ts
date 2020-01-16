@@ -47,30 +47,25 @@ export class ReportService {
     return Number.isNaN(convertedProperty) ? null : convertedProperty
   }
 
-  async fetchLatestReport(request): Promise<ReportDto> {
-    const userId = CookieHelper.userIdCookie(request)
+  async fetchLatestReport(userId: number): Promise<ReportDto> {
     return this.repository.findOne({ where: { ownerId: userId }, order: { createdAt: 'DESC' } })
   }
 
-  async fetchPenultReport(request, lastId): Promise<ReportDto> {
-    const userId = CookieHelper.userIdCookie(request)
+  async fetchPenultReport(userId: number, lastId): Promise<ReportDto> {
     const options: FindManyOptions = {
       where: { id: Not(lastId), ownerId: userId, order: { createdAt: 'DESC' } },
     }
-
     const entitiesCount = await this.repository.count(options)
-    const entities = await this.repository.find(options)
 
+    const entities = await this.repository.find(options)
     return entities[entitiesCount - 1]
   }
 
-  async fetchReports(request, options: IPaginationOptions): Promise<Pagination<ReportDto>> {
-    const userId = CookieHelper.userIdCookie(request)
+  async fetchReports(userId: number, options: IPaginationOptions): Promise<Pagination<ReportDto>> {
     const queryBuilder = this.repository.createQueryBuilder('report')
-
     queryBuilder.where({ ownerId: userId })
-    queryBuilder.orderBy('report.createdAt', 'DESC')
 
+    queryBuilder.orderBy('report.createdAt', 'DESC')
     return paginate<ReportEntity>(queryBuilder, options)
   }
 

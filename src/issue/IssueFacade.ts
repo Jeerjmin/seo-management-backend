@@ -1,7 +1,6 @@
 import { Injectable, HttpStatus } from '@nestjs/common'
 import { IssueService } from './IssueService'
 import { IPaginationOptions } from 'nestjs-typeorm-paginate'
-import { FixerFacade } from 'fixer/FixerFacade'
 import { IssueQueueFactory } from './IssueQueueFactory'
 import { Queues } from 'infrastructure/constants/Queues'
 import { uniqueId } from 'lodash'
@@ -12,7 +11,7 @@ import { FixIssuesDto } from './dto/FixIssuesDto'
 
 @Injectable()
 export class IssueFacade {
-  constructor(private readonly service: IssueService, private readonly fixerFacade: FixerFacade) {}
+  constructor(private readonly service: IssueService) {}
 
   generateIssues(userId: number, analyzerResults) {
     return this.service.generateIssues(userId, analyzerResults)
