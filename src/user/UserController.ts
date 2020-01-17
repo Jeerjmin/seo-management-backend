@@ -1,9 +1,9 @@
-import { Controller, Get, Req, UseGuards, Post } from '@nestjs/common'
+import { Controller, Get, UseGuards, Post } from '@nestjs/common'
 import { ApiLayers } from 'infrastructure/constants/ApiLayers'
 import { UserFacade } from './UserFacade'
 import { ShopifyAuthGuard } from 'auth/ShopifyAuthGuard'
-import { CookieHelper } from 'infrastructure/helper/CookieHelper'
-import { ObfuscationHelper } from 'infrastructure/helper/ObfuscationHelper'
+import { Cookies } from 'infrastructure/constants/Cookies'
+import { Cookie } from 'infrastructure/decorator/CookieDecorator'
 
 @Controller()
 export class UserController {
@@ -11,17 +11,16 @@ export class UserController {
 
   @UseGuards(ShopifyAuthGuard)
   @Get(ApiLayers.SESSIONS + 'me')
-  async fetchEndpoint(@Req() request) {
-    const originalDomain: string = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'pfx'))
-    const accessToken: string = ObfuscationHelper.decrypt(CookieHelper.obtainCookie(request, 'ss'))
-
-    return this.facade.handleFetch(originalDomain, accessToken)
+  async fetchEndpoint(
+    @Cookie(Cookies.ORIGINAL_DOMAIN) originalDomain: string,
+    @Cookie(Cookies.SESSION) session: string,
+  ) {
+    return this.facade.handleFetch(originalDomain, session)
   }
 
   @UseGuards(ShopifyAuthGuard)
   @Post(ApiLayers.USERS + 'skip-onboarding')
-  async skipOnboarding(@Req() request) {
-    const userId: number = CookieHelper.userIdCookie(request)
+  async skipOnboarding(@Cookie(Cookies.USER_ID) userId: number) {
     await this.facade.completeOnboarding(userId)
   }
 }

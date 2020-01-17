@@ -8,6 +8,8 @@ import { TransformInterceptor } from 'infrastructure/interceptor/TransformInterc
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
 import { CookieHelper } from 'infrastructure/helper/CookieHelper'
+import { Cookie } from 'infrastructure/decorator/CookieDecorator'
+import { Cookies } from 'infrastructure/constants/Cookies'
 
 @UseGuards(ShopifyAuthGuard)
 @Controller(ApiLayers.REPORT)
@@ -24,14 +26,16 @@ export class ReportController {
   }
 
   @Get()
-  fetchAll(@Req() request, @Query('page') page: number = 1, @Query('limit') limit: number = 15) {
-    const userId: number = CookieHelper.userIdCookie(request)
+  fetchAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 15,
+    @Cookie(Cookies.USER_ID) userId: number,
+  ) {
     return this.facade.fetchReports(userId, { limit, page })
   }
 
   @Get('queue/:id')
-  async fetchReportStatus(@Req() request, @Param('id') id: number) {
-    const userId: number = CookieHelper.userIdCookie(request)
+  async fetchReportStatus(@Param('id') id: number, @Cookie(Cookies.USER_ID) userId: number) {
     return this.facade.fetchReportStatus(userId, id)
   }
 
