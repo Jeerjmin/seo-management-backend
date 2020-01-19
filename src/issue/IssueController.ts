@@ -14,7 +14,7 @@ export class IssueController {
     @Req() request,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 15,
-    @Query('type') type: string = 'prodcuts',
+    @Query('type') type: string = 'product',
   ) {
     return this.facade.fetchIssues(request, { limit, page }, type)
   }

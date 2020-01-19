@@ -27,6 +27,7 @@ export class IssueService {
   }
 
   handleFetchIssues(request, options: IPaginationOptions, type: string) {
+    console.log(type)
     const userId = CookieHelper.userIdCookie(request)
     const queryBuilder = this.repository.createQueryBuilder('issue')
 
