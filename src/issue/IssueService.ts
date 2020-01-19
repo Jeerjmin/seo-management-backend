@@ -20,8 +20,8 @@ export class IssueService {
         imageSrc: element.image ? element.image.src : element.src,
         title: element.title,
         description: '',
-        seoScore: element.filledAltTagsPercent,
-        seoIssues: element.altTagsCount - element.filledAltTagsCount,
+        seoScore: element.filledAltTagsPercent || 0,
+        seoIssues: element.altTagsCount - element.filledAltTagsCount || 1,
       })
     })
   }
@@ -36,5 +36,4 @@ export class IssueService {
       .orderBy('issue.createdAt', 'DESC')
     return paginate<IssueEntity>(queryBuilder, options)
   }
-
 }
